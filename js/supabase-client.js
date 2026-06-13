@@ -317,6 +317,118 @@
   }
 
   // ============================================================
+  // TAGS / FILTERS (dynamic styles for portfolio filters + upload dropdown)
+  // ============================================================
+
+  /**
+   * Fetch all tags from the portfolio_tags table.
+   * Returns array of { id, name, sort_order }
+   * Falls back to the built-in list if table doesn't exist or is empty.
+   *
+   * REQUIRED: You must create this table in Supabase (see instructions from the AI response).
+   */
+  async function getTags() {
+    const client = getSupabase();
+    if (!client) return AVAILABLE_STYLES.filter(s => s !== 'All').map((name, i) => ({ id: 'local-' + i, name }));
+
+    try {
+      const { data, error } = await client
+        .from('portfolio_tags')
+        .select('*')
+        .order('sort_order', { ascending: true })
+        .order('name', { ascending: true });
+
+      if (error) {
+        // Table probably doesn't exist yet — fall back gracefully
+        console.warn('[Supabase] portfolio_tags table not found or error:', error.message);
+        return AVAILABLE_STYLES.filter(s => s !== 'All').map((name, i) => ({ id: 'fallback-' + i, name }));
+      }
+
+      if (!data || data.length === 0) {
+        // Empty table — return the classic defaults so the site isn't blank
+        return AVAILABLE_STYLES.filter(s => s !== 'All').map((name, i) => ({ id: 'seed-' + i, name }));
+      }
+
+      return data.map(row => ({
+        id: row.id,
+        name: row.name,
+        sort_order: row.sort_order || 0
+      }));
+    } catch (err) {
+      console.error('[Supabase] getTags error:', err);
+      return AVAILABLE_STYLES.filter(s => s !== 'All').map((name, i) => ({ id: 'err-' + i, name }));
+    }
+  }
+
+  /**
+   * Convenience for UI components that just want the name list (including "All" for filters).
+   */
+  async function getAvailableStyles() {
+    const tags = await getTags();
+    const names = tags.map(t => t.name);
+    // Always ensure "All" is first for filter UIs
+    return ['All', ...names];
+  }
+
+  async function addTag(name) {
+    const client = getSupabase();
+    if (!client) throw new Error('Supabase not connected');
+
+    const trimmed = name.trim();
+    if (!trimmed) throw new Error('Tag name cannot be empty');
+
+    // Check for duplicates client-side for nicer UX
+    const existing = await getTags();
+    if (existing.some(t => t.name.toLowerCase() === trimmed.toLowerCase())) {
+      throw new Error('A tag with that name already exists');
+    }
+
+    const { data, error } = await client
+      .from('portfolio_tags')
+      .insert({ name: trimmed })
+      .select()
+      .single();
+
+    if (error) {
+      if (error.code === '23505') throw new Error('A tag with that name already exists');
+      throw error;
+    }
+    return data;
+  }
+
+  async function deleteTag(id) {
+    const client = getSupabase();
+    if (!client) throw new Error('Supabase not connected');
+
+    const { error } = await client
+      .from('portfolio_tags')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+    return true;
+  }
+
+  // Optional simple rename
+  async function updateTag(id, newName) {
+    const client = getSupabase();
+    if (!client) throw new Error('Supabase not connected');
+
+    const trimmed = newName.trim();
+    if (!trimmed) throw new Error('Tag name cannot be empty');
+
+    const { data, error } = await client
+      .from('portfolio_tags')
+      .update({ name: trimmed })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
+
+  // ============================================================
   // AUTH (for admin.html)
   // ============================================================
 
@@ -378,6 +490,13 @@
     // Site-wide editable content
     getSiteSettings,
     saveSiteSettings,
+
+    // Dynamic Tags / Filters
+    getTags,
+    getAvailableStyles,
+    addTag,
+    deleteTag,
+    updateTag,
 
     // Auth
     signInAdmin,

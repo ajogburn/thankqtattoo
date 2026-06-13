@@ -118,8 +118,8 @@
       await renderPortfolioTeaser(teaser, portfolio.slice(0, 8));
     }
 
-    // Re-init filters after new DOM (portfolio page)
-    initFilters();
+    // Re-init filters after new DOM (portfolio page) - fire and forget is fine here
+    try { initFilters(); } catch (e) {}
 
     return { content, portfolio };
   }
@@ -188,13 +188,18 @@
   }
 
   // ============== FILTERS (portfolio page) ==============
-  function initFilters() {
+  async function initFilters() {
     const filterContainer = document.getElementById('style-filters');
     const grid = document.querySelector('.portfolio-grid') || document.querySelector('.portfolio-masonry');
     if (!filterContainer || !grid) return;
 
-    const styles = (window.ThankQSupabase && window.ThankQSupabase.AVAILABLE_STYLES) ||
-                   ['All', 'American Traditional', 'Small Pieces', 'Custom', 'Coverups', 'Studio', 'Other'];
+    let styles;
+    try {
+      styles = (window.ThankQSupabase && await window.ThankQSupabase.getAvailableStyles())
+               || ['All', 'American Traditional', 'Small Pieces', 'Custom', 'Coverups', 'Studio', 'Other'];
+    } catch (e) {
+      styles = ['All', 'American Traditional', 'Small Pieces', 'Custom', 'Coverups', 'Studio', 'Other'];
+    }
 
     // Only build once
     if (filterContainer.children.length === 0) {
@@ -207,7 +212,7 @@
       });
     }
 
-    // Remove previous listeners by cloning (simple way)
+    // Remove previous listeners safely by cloning
     const newFilterBar = filterContainer.cloneNode(true);
     filterContainer.parentNode.replaceChild(newFilterBar, filterContainer);
 
@@ -621,6 +626,9 @@
     if (canvas) initInkParticles('ink-canvas');
 
     initForms();
+
+    // Filters (now async because it can load live tags)
+    try { await initFilters(); } catch (e) { /* non-fatal */ }
 
     // Year in footers
     document.querySelectorAll('#year').forEach(el => {
