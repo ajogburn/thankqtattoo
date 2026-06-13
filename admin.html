@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard — ThankQTattoo</title>
+  <title>Admin • ThankQTattoo</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Oswald:wght@500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
@@ -12,13 +12,18 @@
   <script>
     tailwind.config = { theme: { extend: { fontFamily: { 'display': ['Oswald', 'system-ui', 'sans-serif'], 'serif': ['Playfair Display', 'Georgia', 'serif'] } } } };
   </script>
+
+  <!-- Supabase + our data layer -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-client.js"></script>
   <style>
-    .admin-main { max-width: 1180px; margin: 0 auto; padding: 0 1.25rem; }
+    .admin-main { max-width: 1200px; margin: 0 auto; padding: 0 1.25rem; }
     .stat { background:#161618; border:1px solid #27272a; border-radius:12px; padding:1rem 1.25rem; }
+    .admin-tab { padding: .65rem 1.15rem; font-size: .9rem; }
   </style>
 </head>
 <body class="bg-[#0a0a0c] text-zinc-200">
-  <!-- ADMIN HEADER (consistent branding) -->
+  <!-- TOP NAV -->
   <nav class="nav fixed top-0 left-0 right-0 z-50 border-b border-zinc-800">
     <div class="max-w-7xl mx-auto px-5 md:px-8">
       <div class="flex items-center justify-between h-16">
@@ -30,56 +35,73 @@
           <div class="text-[10px] px-2.5 py-px bg-red-950 text-red-400 rounded tracking-[1.5px]">ADMIN</div>
         </div>
 
-        <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
+        <div class="hidden md:flex items-center gap-x-6 text-sm">
           <a href="portfolio.html" class="nav-link">Portfolio</a>
-          <a href="about.html" class="nav-link">About</a>
-          <a href="services.html" class="nav-link">Services</a>
-          <a href="contact.html" class="nav-link">Contact</a>
+          <a href="index.html" class="nav-link">Site</a>
         </div>
 
-        <div class="flex items-center gap-x-3 text-sm">
-          <a href="index.html" class="text-zinc-400 hover:text-white px-2">← View Site</a>
-          <button onclick="logoutAdmin()" class="px-4 py-1.5 border border-zinc-700 rounded-full hover:bg-zinc-900 text-xs">LOGOUT</button>
+        <div id="nav-user" class="flex items-center gap-x-3 text-sm">
+          <!-- Populated by JS after login -->
         </div>
       </div>
     </div>
   </nav>
   <div class="h-16"></div>
 
-  <!-- LOGIN SCREEN -->
-  <div id="login-screen" class="max-w-[380px] mx-auto pt-16 px-6">
-    <div class="card p-8">
-      <div class="text-center">
-        <div class="flex items-center justify-center gap-x-2 mb-1">
-          <img src="img/Screenshot 2026-06-12 194358_edited.png" alt="ThankQTattoo" class="h-10 w-10 object-cover rounded-full ring-1 ring-red-900/30" />
-          <span class="logo-font text-4xl tracking-tighter">ThankQTattoo</span>
+  <!-- ===================== LOGIN SCREEN ===================== -->
+  <div id="login-screen" class="max-w-md mx-auto pt-12 px-5">
+    <div class="card p-9">
+      <div class="text-center mb-8">
+        <div class="flex justify-center mb-3">
+          <img src="img/Screenshot 2026-06-12 194358_edited.png" class="h-11 w-11 rounded-full ring-1 ring-red-900/30" alt="">
         </div>
-        <div class="text-sm text-red-500/90 tracking-widest mb-7">ADMIN DASHBOARD</div>
+        <div class="logo-font text-3xl tracking-tighter">ThankQTattoo</div>
+        <div class="text-red-400/90 tracking-[2px] text-xs mt-1">ADMIN DASHBOARD</div>
       </div>
 
-      <form id="login-form" onsubmit="handleLogin(event)">
-        <label class="block text-xs tracking-widest mb-2 text-zinc-400">PASSWORD</label>
-        <input id="admin-pass" type="password" class="form-input mb-5" placeholder="Enter admin password" autocomplete="current-password" required>
-        <button type="submit" class="btn btn-primary w-full">LOGIN</button>
+      <form id="login-form" class="space-y-5">
+        <div>
+          <label class="block text-xs tracking-widest text-zinc-400 mb-1.5">EMAIL</label>
+          <input id="login-email" type="email" value="qwami@thankqtattoo.com" class="form-input" placeholder="you@domain.com" required>
+        </div>
+        <div>
+          <label class="block text-xs tracking-widest text-zinc-400 mb-1.5">PASSWORD</label>
+          <input id="login-password" type="password" class="form-input" placeholder="Your admin password" required>
+          <div class="text-[11px] text-zinc-500 mt-1.5">Use the Supabase Auth account you created for Qwami. <span class="text-amber-400/70">No account yet? Use the Sign Up tab below.</span></div>
+        </div>
+
+        <div class="flex gap-3 pt-1">
+          <button type="submit" class="btn btn-primary flex-1">SIGN IN</button>
+          <button type="button" id="signup-btn" class="btn btn-ghost flex-1">SIGN UP NEW ADMIN</button>
+        </div>
       </form>
+
+      <div class="mt-6 pt-5 border-t border-zinc-800 text-[11px] text-center text-zinc-500">
+        Powered by Supabase Auth • All changes saved to the cloud instantly
+      </div>
+    </div>
+
+    <div class="text-center mt-5 text-xs text-zinc-500">
+      Need to create the first admin? Go to Supabase Dashboard → Authentication → Add User, or use Sign Up above.
     </div>
   </div>
 
-  <!-- DASHBOARD -->
-  <div id="dashboard" class="hidden admin-main pt-8 pb-16">
-    <!-- Header stats -->
-    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-y-3 mb-8">
+  <!-- ===================== DASHBOARD ===================== -->
+  <div id="dashboard" class="hidden admin-main pt-7 pb-20">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-y-4 mb-8">
       <div>
-        <div class="uppercase text-xs tracking-[2.5px] text-red-500/80">CMS • LOCAL ONLY</div>
-        <h1 class="text-4xl tracking-tighter font-semibold">Dashboard</h1>
+        <div class="uppercase text-xs tracking-[3px] text-red-500/70">CMS • SUPABASE POWERED</div>
+        <h1 class="text-4xl font-semibold tracking-tighter">Dashboard</h1>
       </div>
-      <div class="flex gap-3 text-xs">
-        <button onclick="exportAllData()" class="btn btn-ghost btn-sm">EXPORT BACKUP (JSON)</button>
-        <button onclick="importDataPrompt()" class="btn btn-ghost btn-sm">IMPORT JSON</button>
-        <button onclick="resetToDefaults()" class="btn btn-ghost btn-sm text-red-400">RESET ALL DATA</button>
+      <div class="flex flex-wrap gap-2">
+        <button onclick="refreshAll()" class="btn btn-ghost btn-sm">↻ REFRESH DATA</button>
+        <button onclick="exportSubmissionsCSV()" class="btn btn-ghost btn-sm">EXPORT SUBMISSIONS CSV</button>
+        <button onclick="logoutAdmin()" class="btn btn-secondary btn-sm text-red-400/90">SIGN OUT</button>
       </div>
     </div>
 
+    <!-- STATS -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
       <div class="stat">
         <div class="text-xs text-zinc-400">PORTFOLIO PIECES</div>
@@ -90,151 +112,143 @@
         <div id="stat-submissions" class="text-4xl font-semibold tabular-nums mt-1">—</div>
       </div>
       <div class="stat">
-        <div class="text-xs text-zinc-400">LAST UPDATED</div>
-        <div id="stat-updated" class="text-base mt-2 text-zinc-300">—</div>
+        <div class="text-xs text-zinc-400">LOGGED IN AS</div>
+        <div id="stat-user" class="text-sm mt-2 text-zinc-300 font-medium break-all">—</div>
       </div>
       <div class="stat">
         <div class="text-xs text-zinc-400">QUICK LINKS</div>
-        <div class="flex flex-wrap gap-x-2 gap-y-px mt-2 text-sm">
-          <a href="portfolio.html" target="_blank" class="underline">Portfolio</a>
-          <a href="index.html" target="_blank" class="underline">Home</a>
-          <a href="services.html#book" target="_blank" class="underline">Booking</a>
+        <div class="mt-1.5 text-sm flex flex-wrap gap-x-3">
+          <a href="portfolio.html" target="_blank" class="underline hover:text-red-400">Live Portfolio</a>
+          <a href="index.html" target="_blank" class="underline hover:text-red-400">Homepage</a>
         </div>
       </div>
     </div>
 
     <!-- TABS -->
-    <div class="flex border-b border-zinc-800 mb-1 text-sm">
-      <button onclick="switchTab('portfolio')" id="tab-portfolio" class="admin-tab active font-medium">Portfolio</button>
-      <button onclick="switchTab('content')" id="tab-content" class="admin-tab font-medium">Content</button>
-      <button onclick="switchTab('submissions')" id="tab-submissions" class="admin-tab font-medium">Submissions</button>
-      <button onclick="switchTab('settings')" id="tab-settings" class="admin-tab font-medium">Settings</button>
+    <div class="flex border-b border-zinc-800 mb-1 text-sm overflow-x-auto">
+      <button onclick="switchTab('portfolio')" id="tab-portfolio" class="admin-tab active whitespace-nowrap">Portfolio</button>
+      <button onclick="switchTab('content')" id="tab-content" class="admin-tab whitespace-nowrap">Site Content</button>
+      <button onclick="switchTab('submissions')" id="tab-submissions" class="admin-tab whitespace-nowrap">Form Submissions</button>
     </div>
 
-    <!-- PORTFOLIO TAB -->
+    <!-- ========== PORTFOLIO TAB ========== -->
     <div id="panel-portfolio" class="tab-panel">
-      <div class="flex items-center justify-between py-4 gap-3 flex-wrap">
-        <div class="text-sm font-medium">Manage Portfolio Images &amp; Metadata</div>
-        <div class="flex gap-2">
-          <button onclick="seedLocalImages()" class="btn btn-secondary btn-sm">+ ADD ALL LOCAL /img PHOTOS</button>
-          <button onclick="showAddImageModal()" class="btn btn-primary btn-sm">+ ADD NEW IMAGE (UPLOAD)</button>
+      <div class="flex items-center justify-between py-5">
+        <div>
+          <div class="font-semibold">Portfolio Images</div>
+          <div class="text-xs text-zinc-500">Upload to Supabase Storage • Edits go live immediately on the site</div>
         </div>
+        <button onclick="showUploadModal()" class="btn btn-primary">+ UPLOAD NEW IMAGE</button>
       </div>
 
+      <!-- Portfolio list (live from Supabase) -->
       <div id="admin-portfolio-list" class="space-y-2"></div>
     </div>
 
-    <!-- CONTENT TAB -->
+    <!-- ========== CONTENT TAB ========== -->
     <div id="panel-content" class="tab-panel hidden">
-      <div class="py-4 text-sm font-medium">Edit Public Site Content</div>
-      <form id="content-form" onsubmit="saveContent(event)" class="space-y-5 max-w-3xl">
-        <div>
-          <label class="text-xs text-zinc-400 tracking-wider block mb-1.5">TAGLINE (Hero &amp; displays)</label>
-          <input id="c-tagline" type="text" class="form-input">
-        </div>
-        <div>
-          <label class="text-xs text-zinc-400 tracking-wider block mb-1.5">BIO (About page + teaser)</label>
-          <textarea id="c-bio" class="form-textarea" rows="7"></textarea>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          <div>
-            <label class="text-xs text-zinc-400 tracking-wider block mb-1.5">CONSULTATION PHONE</label>
-            <input id="c-phone" type="text" class="form-input">
-          </div>
-          <div>
-            <label class="text-xs text-zinc-400 tracking-wider block mb-1.5">SHOP PHONE</label>
-            <input id="c-shopphone" type="text" class="form-input">
-          </div>
-          <div>
-            <label class="text-xs text-zinc-400 tracking-wider block mb-1.5">SHOP NAME</label>
-            <input id="c-shopname" type="text" class="form-input">
-          </div>
-          <div>
-            <label class="text-xs text-zinc-400 tracking-wider block mb-1.5">ADDRESS</label>
-            <input id="c-address" type="text" class="form-input">
-          </div>
-        </div>
-        <div>
-          <label class="text-xs text-zinc-400 tracking-wider block mb-1.5">AVAILABILITY NOTE</label>
-          <input id="c-availability" type="text" class="form-input">
-        </div>
+      <div class="py-5">
+        <div class="font-semibold mb-1">Edit Public Site Content</div>
+        <div class="text-xs text-zinc-500 mb-6">These values are pulled from the <code>site_settings</code> table in Supabase. Changes appear on every page.</div>
 
-        <div class="flex gap-3 pt-2">
-          <button type="submit" class="btn btn-primary">SAVE CHANGES</button>
-          <button type="button" onclick="loadContentIntoForm()" class="btn btn-ghost">RESET FORM FROM CURRENT</button>
-        </div>
-      </form>
+        <form id="content-form" onsubmit="saveSiteContent(event)" class="space-y-6 max-w-3xl">
+          <div>
+            <label class="text-xs uppercase tracking-widest text-zinc-400 block mb-1.5">Hero Tagline</label>
+            <input id="c-tagline" type="text" class="form-input">
+          </div>
+          <div>
+            <label class="text-xs uppercase tracking-widest text-zinc-400 block mb-1.5">Full Bio (About + teaser)</label>
+            <textarea id="c-bio" class="form-textarea" rows="8"></textarea>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-5">
+            <div>
+              <label class="text-xs uppercase tracking-widest text-zinc-400 block mb-1.5">Consultation Phone</label>
+              <input id="c-phone" type="text" class="form-input">
+            </div>
+            <div>
+              <label class="text-xs uppercase tracking-widest text-zinc-400 block mb-1.5">Shop Phone</label>
+              <input id="c-shopphone" type="text" class="form-input">
+            </div>
+            <div>
+              <label class="text-xs uppercase tracking-widest text-zinc-400 block mb-1.5">Shop Name</label>
+              <input id="c-shopname" type="text" class="form-input">
+            </div>
+            <div>
+              <label class="text-xs uppercase tracking-widest text-zinc-400 block mb-1.5">Address</label>
+              <input id="c-address" type="text" class="form-input">
+            </div>
+          </div>
+
+          <div>
+            <label class="text-xs uppercase tracking-widest text-zinc-400 block mb-1.5">Availability Note</label>
+            <input id="c-availability" type="text" class="form-input">
+          </div>
+
+          <div class="flex gap-3 pt-2">
+            <button type="submit" class="btn btn-primary">SAVE TO SUPABASE</button>
+            <button type="button" onclick="loadContentForm()" class="btn btn-ghost">RELOAD FROM CLOUD</button>
+          </div>
+        </form>
+      </div>
     </div>
 
-    <!-- SUBMISSIONS TAB -->
+    <!-- ========== SUBMISSIONS TAB ========== -->
     <div id="panel-submissions" class="tab-panel hidden">
-      <div class="flex items-center justify-between py-4">
-        <div class="text-sm font-medium">Form Submissions &amp; Booking Requests</div>
-        <button onclick="exportSubmissionsCSV()" class="btn btn-secondary btn-sm">EXPORT CSV</button>
+      <div class="flex items-center justify-between py-5">
+        <div class="font-semibold">Form Submissions (stored in this browser)</div>
+        <button onclick="clearSubmissions()" class="text-xs btn btn-ghost btn-sm text-red-400">CLEAR ALL</button>
       </div>
       <div id="admin-submissions-list" class="space-y-3"></div>
-      <div class="text-xs text-zinc-500 mt-4">Submissions are stored only in this browser (localStorage). For production, connect a real form backend + email service.</div>
+      <div class="text-[11px] text-zinc-500 mt-6">These are the consultation &amp; contact requests from the public site. For production, consider connecting a backend email service (Resend, Formspree, etc).</div>
     </div>
 
-    <!-- SETTINGS TAB -->
-    <div id="panel-settings" class="tab-panel hidden">
-      <div class="max-w-md py-4">
-        <div class="text-sm font-medium mb-4">Admin Settings</div>
-
-        <div class="card p-6">
-          <div class="text-xs tracking-widest text-zinc-400 mb-2">CHANGE ADMIN PASSWORD (DEMO)</div>
-          <input id="new-pass" type="text" class="form-input mb-3" placeholder="New password">
-          <button onclick="changeAdminPassword()" class="btn btn-secondary w-full">UPDATE PASSWORD</button>
-          <div class="text-[10px] mt-3 text-amber-400/80">This is stored in localStorage. Replace with real auth for live site.</div>
-        </div>
-
-        <div class="mt-7">
-          <button onclick="logoutAdmin()" class="text-xs px-4 py-2 border border-zinc-700 rounded hover:bg-zinc-900">LOG OUT OF ADMIN</button>
-        </div>
-      </div>
-    </div>
   </div>
 
-  <!-- ADD / EDIT IMAGE MODAL -->
-  <div id="image-modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-[999]" onclick="if (event.target.id==='image-modal') hideImageModal()">
-    <div class="card w-full max-w-lg mx-4 p-6" onclick="event.stopImmediatePropagation()">
-      <div class="font-semibold text-xl mb-4" id="modal-title">Add New Image</div>
+  <!-- ===================== UPLOAD / EDIT MODAL ===================== -->
+  <div id="upload-modal" onclick="if (event.target.id === 'upload-modal') hideUploadModal()" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-[200] p-4">
+    <div onclick="event.stopImmediatePropagation()" class="card w-full max-w-lg p-7">
+      <div class="font-semibold text-2xl tracking-tighter mb-1" id="modal-title">Upload New Piece</div>
+      <div class="text-sm text-zinc-400 mb-6" id="modal-subtitle">Image goes to Supabase Storage. Metadata saved to portfolio table.</div>
 
-      <form id="image-form" onsubmit="saveImageFromModal(event)">
+      <form id="upload-form" onsubmit="handleUploadSubmit(event)">
         <input type="hidden" id="edit-id">
 
-        <div class="mb-4">
-          <label class="text-xs tracking-widest text-zinc-400 block mb-1.5">IMAGE FILE (JPG / PNG / WEBP)</label>
-          <input type="file" id="image-file" accept="image/*" class="block w-full text-sm file:mr-3 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-white/10 file:text-white">
-          <div class="text-[10px] mt-1 text-zinc-500">Images are converted to base64 and stored locally. Keep file sizes reasonable (&lt;1.5MB ideal).</div>
+        <!-- File picker -->
+        <div class="mb-5" id="file-section">
+          <label class="block text-xs tracking-[1.5px] text-zinc-400 mb-2">IMAGE FILE</label>
+          <input type="file" id="upload-file" accept="image/*" class="block w-full text-sm file:mr-4 file:py-2.5 file:px-5 file:rounded-xl file:border-0 file:bg-zinc-900 file:text-white hover:file:bg-zinc-800" required>
+          <div class="text-[11px] text-zinc-500 mt-1.5">JPG, PNG, or WebP. Recommended: under 2MB for fast loading.</div>
         </div>
 
-        <div class="mb-4">
-          <label class="text-xs tracking-widest text-zinc-400 block mb-1.5">CAPTION / DESCRIPTION</label>
-          <input type="text" id="image-caption" class="form-input" placeholder="Bold traditional rose and dagger on bicep">
+        <div class="mb-5">
+          <label class="block text-xs tracking-[1.5px] text-zinc-400 mb-2">CAPTION / DESCRIPTION</label>
+          <input id="upload-caption" type="text" class="form-input" placeholder="Traditional rose and dagger, right forearm" required>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="text-xs tracking-widest text-zinc-400 block mb-1.5">STYLE TAG</label>
-            <select id="image-style" class="form-select">
-              <option>American Traditional</option>
-              <option>Small Pieces</option>
-              <option>Custom</option>
-              <option>Coverups</option>
-              <option>Studio</option>
-              <option>Other</option>
-            </select>
+            <label class="block text-xs tracking-[1.5px] text-zinc-400 mb-2">STYLE</label>
+            <select id="upload-style" class="form-select"></select>
           </div>
           <div>
-            <label class="text-xs tracking-widest text-zinc-400 block mb-1.5">DATE (OPTIONAL)</label>
-            <input type="text" id="image-date" class="form-input" placeholder="2025-05">
+            <label class="block text-xs tracking-[1.5px] text-zinc-400 mb-2">DATE (e.g. 2025-06)</label>
+            <input id="upload-date" type="text" class="form-input" placeholder="2025-06">
           </div>
         </div>
 
+        <!-- Progress -->
+        <div id="upload-progress-wrap" class="hidden mt-6">
+          <div class="text-xs text-zinc-400 mb-1.5 flex justify-between">
+            <div>UPLOADING TO SUPABASE...</div>
+            <div id="upload-percent">0%</div>
+          </div>
+          <div class="progress-bar"><div id="upload-progress" style="width:0%"></div></div>
+        </div>
+
         <div class="flex gap-3 mt-7">
-          <button type="button" onclick="hideImageModal()" class="btn btn-ghost flex-1">CANCEL</button>
-          <button type="submit" class="btn btn-primary flex-1" id="modal-submit-btn">ADD TO PORTFOLIO</button>
+          <button type="button" onclick="hideUploadModal()" class="btn btn-ghost flex-1">CANCEL</button>
+          <button type="submit" id="upload-submit-btn" class="btn btn-primary flex-1">UPLOAD &amp; PUBLISH</button>
         </div>
       </form>
     </div>
@@ -244,39 +258,104 @@
 
   <script src="js/common.js"></script>
   <script>
-    // ==================== ADMIN SPECIFIC ====================
-    const ADMIN_PASSWORD_KEY = 'thankq_admin_pass';
-    let currentAdminPass = 'thankq2025'; // default
+    // =======================================================
+    // ADMIN DASHBOARD — Supabase edition
+    // =======================================================
+    let currentUser = null;
+    let portfolioCache = [];
 
-    function getAdminPass() {
-      return localStorage.getItem(ADMIN_PASSWORD_KEY) || currentAdminPass;
-    }
+    // Boot the admin page
+    async function bootAdmin() {
+      const client = window.ThankQSupabase ? window.ThankQSupabase.getSupabase() : null;
 
-    function setAdminPass(pw) {
-      localStorage.setItem(ADMIN_PASSWORD_KEY, pw);
-    }
+      if (!client) {
+        alert('Supabase client failed to initialize. Check that js/supabase-client.js loaded correctly.');
+        return;
+      }
 
-    function isAdminLoggedIn() {
-      return sessionStorage.getItem('thankq_admin_auth') === 'true';
-    }
+      // Listen for auth state
+      client.auth.onAuthStateChange((event, session) => {
+        if (session && session.user) {
+          currentUser = session.user;
+          showDashboard();
+        } else {
+          currentUser = null;
+          showLogin();
+        }
+      });
 
-    function handleLogin(e) {
-      e.preventDefault();
-      const input = document.getElementById('admin-pass').value.trim();
-      const correct = getAdminPass();
-
-      if (input === correct) {
-        sessionStorage.setItem('thankq_admin_auth', 'true');
-        document.getElementById('login-screen').classList.add('hidden');
-        document.getElementById('dashboard').classList.remove('hidden');
-        initDashboard();
+      // Check if already signed in
+      const { data: { user } } = await client.auth.getUser();
+      if (user) {
+        currentUser = user;
+        showDashboard();
       } else {
-        alert('Incorrect password');
+        showLogin();
+      }
+
+      // Sign up button handler
+      const signupBtn = document.getElementById('signup-btn');
+      if (signupBtn) {
+        signupBtn.addEventListener('click', handleSignUp);
+      }
+
+      // Login form
+      document.getElementById('login-form').addEventListener('submit', handleLogin);
+    }
+
+    function showLogin() {
+      document.getElementById('login-screen').classList.remove('hidden');
+      document.getElementById('login-screen').classList.add('flex', 'items-center', 'justify-center', 'min-h-[70vh]');
+      document.getElementById('dashboard').classList.add('hidden');
+      document.getElementById('nav-user').innerHTML = '';
+    }
+
+    function showDashboard() {
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('login-screen').classList.remove('flex', 'items-center', 'justify-center', 'min-h-[70vh]');
+      document.getElementById('dashboard').classList.remove('hidden');
+
+      // Show who is logged in
+      const nav = document.getElementById('nav-user');
+      nav.innerHTML = `
+        <div class="text-xs px-3 py-1 bg-zinc-900 rounded-full flex items-center gap-2 border border-zinc-700">
+          <span class="text-emerald-400">●</span>
+          <span class="font-medium">${currentUser?.email || 'Admin'}</span>
+        </div>
+      `;
+
+      initDashboard();
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+      const pass = document.getElementById('login-password').value;
+
+      try {
+        await window.ThankQSupabase.signInAdmin(email, pass);
+        // onAuthStateChange will handle showing dashboard
+      } catch (err) {
+        alert('Login failed: ' + (err.message || err));
       }
     }
 
-    function logoutAdmin() {
-      sessionStorage.removeItem('thankq_admin_auth');
+    async function handleSignUp() {
+      const email = prompt('Enter email for the new admin account:');
+      if (!email) return;
+      const pass = prompt('Create a strong password (min 6 chars):');
+      if (!pass || pass.length < 6) return alert('Password too short');
+
+      try {
+        await window.ThankQSupabase.signUpAdmin(email, pass);
+        alert('Account created! Check your email for a confirmation link (if email confirmation is enabled in Supabase). Then sign in.');
+      } catch (err) {
+        alert('Sign up error: ' + (err.message || err));
+      }
+    }
+
+    async function logoutAdmin() {
+      await window.ThankQSupabase.signOutAdmin();
       window.location.reload();
     }
 
@@ -285,246 +364,268 @@
       document.getElementById('panel-' + tab).classList.remove('hidden');
 
       document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
-      document.getElementById('tab-' + tab).classList.add('active');
+      const btn = document.getElementById('tab-' + tab);
+      if (btn) btn.classList.add('active');
     }
 
-    function initDashboard() {
+    async function initDashboard() {
+      await Promise.all([
+        refreshPortfolioList(),
+        loadContentForm(),
+        renderSubmissionsList()
+      ]);
       updateStats();
-      renderPortfolioAdminList();
-      loadContentIntoForm();
-      renderSubmissionsList();
-
-      // Default to portfolio tab
+      // Default to portfolio
       switchTab('portfolio');
     }
 
     function updateStats() {
-      const portfolio = ThankQ.loadFromStorage('thankq_portfolio', ThankQ.DEFAULT_PORTFOLIO);
-      const subs = ThankQ.loadFromStorage('thankq_submissions', []);
-
-      document.getElementById('stat-portfolio').textContent = portfolio.length;
+      document.getElementById('stat-portfolio').textContent = portfolioCache.length || '—';
+      const subs = window.ThankQ.loadFromStorage('thankq_submissions', []);
       document.getElementById('stat-submissions').textContent = subs.length;
 
-      const last = localStorage.getItem('thankq_last_updated');
-      document.getElementById('stat-updated').textContent = last ? new Date(last).toLocaleDateString() : 'Just now';
+      const userEl = document.getElementById('stat-user');
+      if (userEl) userEl.textContent = currentUser?.email || '—';
     }
 
-    // ===== PORTFOLIO ADMIN =====
-    function renderPortfolioAdminList() {
+    async function refreshAll() {
+      await refreshPortfolioList();
+      await loadContentForm();
+      updateStats();
+      window.ThankQ.showToast('Refreshed from Supabase');
+    }
+
+    // ==================== PORTFOLIO ====================
+    async function refreshPortfolioList() {
       const container = document.getElementById('admin-portfolio-list');
-      const items = ThankQ.loadFromStorage('thankq_portfolio', ThankQ.DEFAULT_PORTFOLIO);
-      container.innerHTML = '';
-
-      items.forEach((item, idx) => {
-        const row = document.createElement('div');
-        row.className = 'flex items-center gap-4 bg-[#161618] border border-zinc-800 rounded-2xl p-3';
-        row.innerHTML = `
-          <img src="${item.url}" class="portfolio-thumb flex-shrink-0" alt="">
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center gap-x-2">
-              <span class="style-badge">${item.style || 'Custom'}</span>
-              <span class="text-xs text-zinc-400">${item.date || ''}</span>
-            </div>
-            <div class="font-medium truncate pr-3">${item.caption || '(no caption)'}</div>
-          </div>
-          <div class="flex gap-2 flex-shrink-0">
-            <button class="btn btn-ghost btn-sm text-xs" onclick="editPortfolioItem(${item.id})">EDIT</button>
-            <button class="btn btn-ghost btn-sm text-xs text-red-400/90" onclick="deletePortfolioItem(${item.id})">DELETE</button>
-          </div>
-        `;
-        container.appendChild(row);
-      });
-    }
-
-    let currentEditId = null;
-
-    function showAddImageModal() {
-      document.getElementById('modal-title').textContent = 'Add New Image';
-      document.getElementById('modal-submit-btn').textContent = 'ADD TO PORTFOLIO';
-      document.getElementById('image-form').reset();
-      document.getElementById('edit-id').value = '';
-      currentEditId = null;
-      document.getElementById('image-modal').classList.remove('hidden');
-      document.getElementById('image-modal').classList.add('flex');
-    }
-
-    function editPortfolioItem(id) {
-      const items = ThankQ.loadFromStorage('thankq_portfolio', ThankQ.DEFAULT_PORTFOLIO);
-      const item = items.find(i => i.id === id);
-      if (!item) return;
-
-      currentEditId = id;
-      document.getElementById('modal-title').textContent = 'Edit Image';
-      document.getElementById('modal-submit-btn').textContent = 'SAVE CHANGES';
-      document.getElementById('edit-id').value = id;
-      document.getElementById('image-caption').value = item.caption || '';
-      document.getElementById('image-style').value = item.style || 'American Traditional';
-      document.getElementById('image-date').value = item.date || '';
-
-      // We cannot prefill file input for security reasons — user must reselect if changing image
-      document.getElementById('image-file').value = '';
-
-      document.getElementById('image-modal').classList.remove('hidden');
-      document.getElementById('image-modal').classList.add('flex');
-    }
-
-    function hideImageModal() {
-      const modal = document.getElementById('image-modal');
-      modal.classList.remove('flex');
-      modal.classList.add('hidden');
-    }
-
-    async function saveImageFromModal(e) {
-      e.preventDefault();
-
-      const fileInput = document.getElementById('image-file');
-      const caption = document.getElementById('image-caption').value.trim();
-      const style = document.getElementById('image-style').value;
-      const date = document.getElementById('image-date').value.trim();
-      const editId = document.getElementById('edit-id').value;
+      container.innerHTML = `<div class="text-xs text-zinc-500 p-3">Loading portfolio from Supabase...</div>`;
 
       try {
-        let items = ThankQ.loadFromStorage('thankq_portfolio', ThankQ.DEFAULT_PORTFOLIO);
+        const items = await window.ThankQSupabase.getPortfolio();
+        portfolioCache = items;
 
-        if (editId) {
-          // Editing existing
-          const itemIndex = items.findIndex(i => i.id == editId);
-          if (itemIndex > -1) {
-            items[itemIndex].caption = caption;
-            items[itemIndex].style = style;
-            items[itemIndex].date = date;
+        container.innerHTML = '';
 
-            // If user selected a new file, replace the image
-            if (fileInput.files && fileInput.files[0]) {
-              const dataUrl = await fileToDataURL(fileInput.files[0]);
-              items[itemIndex].url = dataUrl;
-            }
-          }
-        } else {
-          // New image
-          if (!fileInput.files || !fileInput.files[0]) {
-            alert('Please select an image file.');
-            return;
-          }
-
-          // Size warning for large screenshots / photos
-          const file = fileInput.files[0];
-          if (file.size > 1.8 * 1024 * 1024) {
-            const proceed = confirm(
-              `This file is ${(file.size / 1024 / 1024).toFixed(1)} MB. ` +
-              `Large images get converted to base64 and can fill up browser storage. ` +
-              `Consider cropping or resizing the photo first. Continue anyway?`
-            );
-            if (!proceed) return;
-          }
-
-          const dataUrl = await fileToDataURL(file);
-          const maxId = items.length > 0 ? Math.max(...items.map(i => i.id || 0)) : 0;
-          const newId = maxId + 1 || Date.now();
-
-          items.unshift({
-            id: newId,
-            url: dataUrl,
-            caption,
-            style,
-            date: date || new Date().toISOString().slice(0,7)
-          });
+        if (!items.length) {
+          container.innerHTML = `
+            <div class="text-center py-10 border border-dashed border-zinc-800 rounded-2xl">
+              <div class="text-sm">No pieces yet in Supabase.</div>
+              <button onclick="showUploadModal()" class="mt-3 btn btn-primary btn-sm">Upload your first piece</button>
+            </div>`;
+          updateStats();
+          return;
         }
 
-        ThankQ.saveToStorage('thankq_portfolio', items);
-        localStorage.setItem('thankq_last_updated', new Date().toISOString());
+        items.forEach(item => {
+          const row = document.createElement('div');
+          row.className = 'admin-row flex gap-4 items-center bg-[#161618] border border-zinc-800 rounded-2xl p-3';
 
-        hideImageModal();
-        renderPortfolioAdminList();
-        updateStats();
-        ThankQ.showToast('Portfolio updated. Refresh public pages to see changes.');
+          // Guard: detect items that came from old numeric fallback (id like 1,2,3... with no created_at from DB)
+          const isRealDbItem = !!(item && (item.created_at || (typeof item.id === 'string' && item.id.includes('-'))));
+          const safeId = String(item.id || '').replace(/'/g, "\\'"); // escape for inline onclick
+
+          let actionsHTML = '';
+          if (isRealDbItem) {
+            actionsHTML = `
+              <button class="btn btn-ghost btn-sm text-xs" onclick="editPortfolio('${safeId}')">EDIT</button>
+              <button class="btn btn-ghost btn-sm text-xs text-red-400" onclick="deletePortfolio('${safeId}')">DELETE</button>
+            `;
+          } else {
+            actionsHTML = `
+              <span class="text-[10px] px-2 py-1 rounded bg-amber-900/60 text-amber-300">Preview only — upload real image via + button</span>
+            `;
+          }
+
+          row.innerHTML = `
+            <img src="${item.url}" class="w-16 h-16 object-cover rounded-lg border border-zinc-700 flex-shrink-0" alt="">
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 text-xs">
+                <span class="style-badge">${item.style || 'Custom'}</span>
+                <span class="text-zinc-500">${item.date || ''}</span>
+              </div>
+              <div class="font-medium leading-tight mt-0.5 pr-2 line-clamp-2">${item.caption || '(no caption)'}</div>
+              <div class="text-[10px] text-zinc-500 mt-0.5 truncate">${item.url}</div>
+            </div>
+            <div class="flex-shrink-0 flex gap-2">
+              ${actionsHTML}
+            </div>
+          `;
+          container.appendChild(row);
+        });
       } catch (err) {
-        console.error('Portfolio save error:', err);
-        if (err.name === 'QuotaExceededError' || String(err).toLowerCase().includes('quota')) {
-          alert('Browser storage is full (common with large images).\n\nTips:\n• Use smaller/c ropped photos (under 1MB ideal)\n• Delete some older pieces first\n• Or use the "RESET ALL DATA" button in Settings and re-add');
-        } else {
-          alert('Could not save the image. ' + (err.message || 'Unknown error. Check the browser console.'));
-        }
+        container.innerHTML = `<div class="text-red-400 p-4">Failed to load portfolio: ${err.message}</div>`;
       }
-    }
-
-    function fileToDataURL(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-    }
-
-    function deletePortfolioItem(id) {
-      if (!confirm('Delete this portfolio piece?')) return;
-      let items = ThankQ.loadFromStorage('thankq_portfolio', ThankQ.DEFAULT_PORTFOLIO);
-      items = items.filter(i => i.id !== id);
-      ThankQ.saveToStorage('thankq_portfolio', items);
-      renderPortfolioAdminList();
       updateStats();
     }
 
-    // One-click helper: merge all the real tattoo photos from the local /img folder into the portfolio
-    function seedLocalImages() {
-      if (!confirm('This will add (or update) the tattoo photos from your /img folder into the managed portfolio. Continue?')) {
+    // Upload modal
+    let isEditing = false;
+
+    function showUploadModal(existing = null) {
+      const modal = document.getElementById('upload-modal');
+      const title = document.getElementById('modal-title');
+      const subtitle = document.getElementById('modal-subtitle');
+      const form = document.getElementById('upload-form');
+      const fileInput = document.getElementById('upload-file');
+      const submitBtn = document.getElementById('upload-submit-btn');
+
+      form.reset();
+      document.getElementById('upload-progress-wrap').classList.add('hidden');
+      document.getElementById('edit-id').value = '';
+
+      // Populate style dropdown
+      const styleSelect = document.getElementById('upload-style');
+      styleSelect.innerHTML = '';
+      const styles = window.ThankQSupabase.AVAILABLE_STYLES.filter(s => s !== 'All');
+      styles.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s;
+        opt.textContent = s;
+        styleSelect.appendChild(opt);
+      });
+
+      if (existing) {
+        isEditing = true;
+        title.textContent = 'Edit Portfolio Piece';
+        subtitle.textContent = 'Update caption, style, or date. To replace the image file, delete + re-upload.';
+        document.getElementById('edit-id').value = existing.id;
+        document.getElementById('upload-caption').value = existing.caption || '';
+        document.getElementById('upload-style').value = existing.style || 'Custom';
+        document.getElementById('upload-date').value = existing.date || '';
+        // Hide file input in edit mode (image replace = delete & re-upload)
+        document.getElementById('file-section').classList.add('hidden');
+        fileInput.required = false;
+        submitBtn.textContent = 'SAVE CHANGES';
+      } else {
+        isEditing = false;
+        title.textContent = 'Upload New Piece';
+        subtitle.textContent = 'Image goes straight to Supabase Storage. It will appear on the public site instantly.';
+        document.getElementById('file-section').classList.remove('hidden');
+        fileInput.required = true;
+        submitBtn.textContent = 'UPLOAD & PUBLISH';
+      }
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function hideUploadModal() {
+      const modal = document.getElementById('upload-modal');
+      modal.classList.remove('flex');
+      modal.classList.add('hidden');
+      document.getElementById('file-section').classList.remove('hidden');
+    }
+
+    async function handleUploadSubmit(e) {
+      e.preventDefault();
+
+      const id = document.getElementById('edit-id').value;
+      const caption = document.getElementById('upload-caption').value.trim();
+      const style = document.getElementById('upload-style').value;
+      const date = document.getElementById('upload-date').value.trim();
+      const fileInput = document.getElementById('upload-file');
+      const progressWrap = document.getElementById('upload-progress-wrap');
+      const progressBar = document.getElementById('upload-progress');
+      const percentEl = document.getElementById('upload-percent');
+      const submitBtn = document.getElementById('upload-submit-btn');
+
+      try {
+        submitBtn.disabled = true;
+
+        if (id) {
+          // EDIT MODE — only metadata
+          await window.ThankQSupabase.updatePortfolioItem(id, { caption, style, date });
+          window.ThankQ.showToast('Piece updated in Supabase.');
+        } else {
+          // NEW UPLOAD
+          if (!fileInput.files || !fileInput.files[0]) {
+            alert('Please choose an image file.');
+            submitBtn.disabled = false;
+            return;
+          }
+          const file = fileInput.files[0];
+
+          progressWrap.classList.remove('hidden');
+          progressBar.style.width = '0%';
+          percentEl.textContent = '0%';
+
+          const onProgress = (p) => {
+            progressBar.style.width = p + '%';
+            percentEl.textContent = p + '%';
+          };
+
+          await window.ThankQSupabase.uploadPortfolioImage(file, { caption, style, date }, onProgress);
+          window.ThankQ.showToast('Uploaded! It is now live on the site.');
+        }
+
+        hideUploadModal();
+        await refreshPortfolioList();
+        updateStats();
+
+      } catch (err) {
+        console.error(err);
+        alert('Upload / save failed: ' + (err.message || err));
+      } finally {
+        submitBtn.disabled = false;
+        if (progressWrap) progressWrap.classList.add('hidden');
+      }
+    }
+
+    async function editPortfolio(id) {
+      // id may arrive as string (from onclick) or original type
+      const item = portfolioCache.find(p => String(p.id) === String(id));
+      if (!item) {
+        alert('Item not found in cache. Click Refresh Data and try again.');
+        return;
+      }
+      showUploadModal(item);
+    }
+
+    async function deletePortfolio(id) {
+      // id is passed as string from the safe onclicks above
+      if (!id || id === 'undefined' || id === 'null') {
+        alert('Cannot delete: invalid ID. Please refresh the list.');
         return;
       }
 
-      let stored = ThankQ.loadFromStorage('thankq_portfolio', []);
-      const defaults = ThankQ.DEFAULT_PORTFOLIO || [];
+      // Extra safety: refuse tiny numeric ids that indicate old fallback data
+      if (/^\d+$/.test(String(id)) && Number(id) < 10000) {
+        alert('This item is a local preview (not a real Supabase record).\n\nUse the "+ UPLOAD NEW IMAGE" button to add real pieces that you can manage and delete.');
+        return;
+      }
 
-      // Only take items that point to local img/ paths (the real photos)
-      const localOnes = defaults.filter(d => d.url && d.url.startsWith('img/'));
+      if (!confirm('Permanently delete this portfolio piece from Supabase?\nThis cannot be undone.')) return;
 
-      let added = 0;
-      localOnes.forEach(localItem => {
-        const existingIndex = stored.findIndex(s => s.url === localItem.url);
-        if (existingIndex === -1) {
-          // Add new
-          const maxId = stored.length > 0 ? Math.max(...stored.map(s => s.id || 0)) : 0;
-          stored.unshift({
-            id: maxId + 1,
-            url: localItem.url,
-            caption: localItem.caption || 'Tattoo by Qwami Tucker',
-            style: localItem.style || 'American Traditional',
-            date: localItem.date || new Date().toISOString().slice(0,7)
-          });
-          added++;
-        } else {
-          // Optionally refresh caption/style if they are still the generic ones
-          if (!stored[existingIndex].caption || stored[existingIndex].caption.includes('Tattoo by')) {
-            stored[existingIndex].caption = localItem.caption;
-            stored[existingIndex].style = localItem.style;
-            stored[existingIndex].date = localItem.date;
-          }
-        }
-      });
-
-      ThankQ.saveToStorage('thankq_portfolio', stored);
-      localStorage.setItem('thankq_last_updated', new Date().toISOString());
-
-      renderPortfolioAdminList();
-      updateStats();
-      ThankQ.showToast(added > 0 ? `Added ${added} local photos to portfolio.` : 'Local photos are already in the portfolio.');
+      try {
+        await window.ThankQSupabase.deletePortfolioItem(id);
+        window.ThankQ.showToast('Deleted from Supabase.');
+        await refreshPortfolioList();
+        updateStats();
+      } catch (err) {
+        const msg = (err && err.message) ? err.message : String(err);
+        alert('Delete failed.\n\n' + msg + '\n\nTip: Make sure your portfolio table uses a proper id column (uuid or bigint) and RLS allows deletes for authenticated users. See SUPABASE-SETUP.md.');
+      }
     }
 
-    // ===== CONTENT =====
-    function loadContentIntoForm() {
-      const c = ThankQ.loadFromStorage('thankq_content', ThankQ.DEFAULT_CONTENT);
-      document.getElementById('c-tagline').value = c.tagline || '';
-      document.getElementById('c-bio').value = c.bio || '';
-      document.getElementById('c-phone').value = c.phone || '';
-      document.getElementById('c-shopphone').value = c.shopPhone || '';
-      document.getElementById('c-shopname').value = c.shopName || '';
-      document.getElementById('c-address').value = c.address || '';
-      document.getElementById('c-availability').value = c.availability || '';
+    // ==================== SITE CONTENT ====================
+    async function loadContentForm() {
+      try {
+        const settings = await window.ThankQSupabase.getSiteSettings();
+        document.getElementById('c-tagline').value = settings.tagline || '';
+        document.getElementById('c-bio').value = settings.bio || '';
+        document.getElementById('c-phone').value = settings.phone || '';
+        document.getElementById('c-shopphone').value = settings.shopPhone || '';
+        document.getElementById('c-shopname').value = settings.shopName || '';
+        document.getElementById('c-address').value = settings.address || '';
+        document.getElementById('c-availability').value = settings.availability || '';
+      } catch (e) {
+        console.warn('Could not load site content', e);
+      }
     }
 
-    function saveContent(e) {
+    async function saveSiteContent(e) {
       e.preventDefault();
-      const newContent = {
+      const payload = {
         tagline: document.getElementById('c-tagline').value,
         bio: document.getElementById('c-bio').value,
         phone: document.getElementById('c-phone').value,
@@ -533,179 +634,96 @@
         address: document.getElementById('c-address').value,
         availability: document.getElementById('c-availability').value
       };
-      ThankQ.saveToStorage('thankq_content', newContent);
-      localStorage.setItem('thankq_last_updated', new Date().toISOString());
-      ThankQ.showToast('Site content updated. Public pages will reflect changes immediately.');
-      updateStats();
+
+      try {
+        await window.ThankQSupabase.saveSiteSettings(payload);
+        window.ThankQ.showToast('Site content saved to Supabase. Public pages updated.');
+      } catch (err) {
+        alert('Failed to save content: ' + (err.message || err));
+      }
     }
 
-    // ===== SUBMISSIONS =====
-    function renderSubmissionsList() {
+    // ==================== SUBMISSIONS (localStorage) ====================
+    async function renderSubmissionsList() {
       const container = document.getElementById('admin-submissions-list');
-      const subs = ThankQ.loadFromStorage('thankq_submissions', []);
+      const subs = window.ThankQ.loadFromStorage('thankq_submissions', []);
 
       container.innerHTML = '';
 
-      if (subs.length === 0) {
-        container.innerHTML = `<div class="text-sm text-zinc-400 py-6 text-center border border-dashed border-zinc-800 rounded-2xl">No submissions yet. Forms on the live site will appear here.</div>`;
+      if (!subs.length) {
+        container.innerHTML = `<div class="p-5 border border-dashed border-zinc-800 rounded-2xl text-sm text-zinc-400">No submissions yet. They will appear here after people use the booking forms on the site.</div>`;
         return;
       }
 
-      subs.forEach((s, idx) => {
-        const el = document.createElement('div');
-        el.className = 'submission-card';
+      subs.forEach((s, index) => {
+        const div = document.createElement('div');
+        div.className = 'submission-card';
         const date = new Date(s.ts).toLocaleString();
-
-        el.innerHTML = `
-          <div class="flex justify-between text-xs text-zinc-400">
-            <div>${date}</div>
-            <div class="font-mono text-[10px]">${s.id}</div>
+        div.innerHTML = `
+          <div class="flex justify-between text-xs">
+            <div class="text-zinc-400">${date}</div>
+            <div class="font-mono text-[10px] text-zinc-500">${s.id}</div>
           </div>
-          <div class="mt-1 font-semibold">${s.name || '—'} <span class="font-normal text-zinc-400">• ${s.phone || s.email || ''}</span></div>
-          <div class="text-xs mt-1 text-red-400/90">${s.style || s.type || 'General'}</div>
-          <div class="text-sm mt-2 text-zinc-300">${(s.message || '').substring(0, 180)}${s.message && s.message.length > 180 ? '…' : ''}</div>
-          
-          <div class="mt-3 flex gap-x-2">
-            <button onclick="markSubmissionContacted(${idx})" class="text-xs px-3 py-1 border border-green-700/60 text-green-400 rounded-full hover:bg-green-950">MARK CONTACTED</button>
-            <button onclick="deleteSubmission(${idx})" class="text-xs px-3 py-1 border border-red-900/60 text-red-400/90 rounded-full hover:bg-red-950">DELETE</button>
+          <div class="mt-1 font-medium">${s.name || ''} <span class="font-normal text-zinc-400">• ${s.phone || s.email || ''}</span></div>
+          <div class="text-xs mt-0.5 text-red-400/80">${s.style || s.type || 'General'}</div>
+          <div class="text-sm mt-2 text-zinc-300">${(s.message || '').substring(0, 160)}${s.message?.length > 160 ? '…' : ''}</div>
+          <div class="flex gap-2 mt-3">
+            <button onclick="markContacted(${index})" class="px-3 py-1 text-xs rounded-full border border-green-800/60 text-green-400 hover:bg-green-950">MARK CONTACTED</button>
+            <button onclick="deleteSubmission(${index})" class="px-3 py-1 text-xs rounded-full border border-red-900/50 text-red-400 hover:bg-red-950">DELETE</button>
           </div>
         `;
-        container.appendChild(el);
+        container.appendChild(div);
       });
     }
 
-    function markSubmissionContacted(index) {
-      const subs = ThankQ.loadFromStorage('thankq_submissions', []);
+    function markContacted(index) {
+      const subs = window.ThankQ.loadFromStorage('thankq_submissions', []);
       if (!subs[index]) return;
       subs[index].contacted = true;
       subs[index].contactedAt = new Date().toISOString();
-      ThankQ.saveToStorage('thankq_submissions', subs);
+      window.ThankQ.saveToStorage('thankq_submissions', subs);
       renderSubmissionsList();
-      ThankQ.showToast('Marked as contacted.');
     }
 
     function deleteSubmission(index) {
       if (!confirm('Delete this submission?')) return;
-      const subs = ThankQ.loadFromStorage('thankq_submissions', []);
+      let subs = window.ThankQ.loadFromStorage('thankq_submissions', []);
       subs.splice(index, 1);
-      ThankQ.saveToStorage('thankq_submissions', subs);
+      window.ThankQ.saveToStorage('thankq_submissions', subs);
       renderSubmissionsList();
       updateStats();
     }
 
     function exportSubmissionsCSV() {
-      const subs = ThankQ.loadFromStorage('thankq_submissions', []);
-      if (!subs.length) { alert('No submissions to export'); return; }
+      const subs = window.ThankQ.loadFromStorage('thankq_submissions', []);
+      if (!subs.length) { alert('Nothing to export'); return; }
 
-      const headers = ['id','ts','name','phone','email','style','size','timing','message','type','contacted'];
+      const headers = ['id','ts','name','phone','email','style','size','timing','message','type'];
       let csv = headers.join(',') + '\n';
-
       subs.forEach(s => {
         const row = headers.map(h => {
-          let v = s[h] || '';
-          if (typeof v === 'string') v = v.replace(/"/g, '""');
+          let v = (s[h] || '').toString().replace(/"/g, '""');
           return `"${v}"`;
         });
         csv += row.join(',') + '\n';
       });
 
       const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
+      a.href = url;
       a.download = `thankqtattoo_submissions_${new Date().toISOString().slice(0,10)}.csv`;
       a.click();
     }
 
-    // ===== SETTINGS =====
-    function changeAdminPassword() {
-      const input = document.getElementById('new-pass').value.trim();
-      if (!input || input.length < 4) {
-        alert('Password must be at least 4 characters.');
-        return;
-      }
-      setAdminPass(input);
-      ThankQ.showToast('Admin password updated in this browser.');
-      document.getElementById('new-pass').value = '';
+    function clearSubmissions() {
+      if (!confirm('Clear all local submissions?')) return;
+      window.ThankQ.saveToStorage('thankq_submissions', []);
+      renderSubmissionsList();
+      updateStats();
     }
 
-    // ===== IMPORT / EXPORT / RESET =====
-    function exportAllData() {
-      const data = {
-        thankq_portfolio: ThankQ.loadFromStorage('thankq_portfolio', ThankQ.DEFAULT_PORTFOLIO),
-        thankq_content: ThankQ.loadFromStorage('thankq_content', ThankQ.DEFAULT_CONTENT),
-        thankq_submissions: ThankQ.loadFromStorage('thankq_submissions', []),
-        thankq_admin_pass: getAdminPass(),
-        exported: new Date().toISOString()
-      };
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `thankqtattoo_backup_${new Date().toISOString().slice(0,10)}.json`;
-      a.click();
-    }
-
-    function importDataPrompt() {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = 'application/json';
-      input.onchange = async () => {
-        const file = input.files[0];
-        if (!file) return;
-        const text = await file.text();
-        try {
-          const data = JSON.parse(text);
-          if (data.thankq_portfolio) ThankQ.saveToStorage('thankq_portfolio', data.thankq_portfolio);
-          if (data.thankq_content) ThankQ.saveToStorage('thankq_content', data.thankq_content);
-          if (data.thankq_submissions) ThankQ.saveToStorage('thankq_submissions', data.thankq_submissions);
-          if (data.thankq_admin_pass) setAdminPass(data.thankq_admin_pass);
-          ThankQ.showToast('Data imported successfully. Reloading dashboard...');
-          setTimeout(() => window.location.reload(), 900);
-        } catch (err) {
-          alert('Invalid JSON backup file.');
-        }
-      };
-      input.click();
-    }
-
-    function resetToDefaults() {
-      if (!confirm('This will wipe all portfolio items, content edits, and submissions. Are you sure?')) return;
-      localStorage.removeItem('thankq_portfolio');
-      localStorage.removeItem('thankq_content');
-      localStorage.removeItem('thankq_submissions');
-      localStorage.removeItem('thankq_last_updated');
-      ThankQ.showToast('All data reset to defaults.');
-      setTimeout(() => window.location.reload(), 600);
-    }
-
-    // ==================== BOOT ADMIN ====================
-    function bootAdmin() {
-      // Seed a default password if none exists
-      if (!localStorage.getItem(ADMIN_PASSWORD_KEY)) {
-        localStorage.setItem(ADMIN_PASSWORD_KEY, currentAdminPass);
-      }
-
-      if (isAdminLoggedIn()) {
-        document.getElementById('login-screen').classList.add('hidden');
-        document.getElementById('dashboard').classList.remove('hidden');
-        initDashboard();
-      } else {
-        // show login only
-        document.getElementById('dashboard').classList.add('hidden');
-      }
-
-      // Keyboard hint on login
-      const passInput = document.getElementById('admin-pass');
-      if (passInput) {
-        passInput.addEventListener('keydown', (e) => {
-          if (e.key === '?' && passInput.value === '') {
-            passInput.value = 'thankq2025';
-            e.preventDefault();
-          }
-        });
-      }
-    }
-
+    // Boot everything
     window.onload = bootAdmin;
   </script>
 </body>

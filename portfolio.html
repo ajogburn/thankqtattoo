@@ -7,6 +7,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Oswald:wght@500;600;700&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet">
+
+    <!-- Supabase live data for gallery -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
     <meta name="description" content="Portfolio of Qwami Tucker at Thank Q Tattoos - American Traditional, custom, small pieces, and cover-ups at Bangarang Tattooing Co. in Killeen, TX.">
 </head>
 <body class="bg-[#0a0a0c] text-white">
@@ -67,61 +71,59 @@
   </section>
 
   <div class="max-w-screen-2xl mx-auto px-6 py-16">
-    <div class="flex justify-between items-end mb-10">
+    <!-- FILTER BAR + HEADER -->
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-y-4 mb-8">
       <div>
-        <h2 class="section-header">Recent Work</h2>
-                    <p class="text-zinc-400">American Traditional • Custom • Small Pieces</p>
-                </div>
-                <a href="#instagram-feed" class="text-sm flex items-center gap-2 hover:text-red-400 transition-colors">
-                    LIVE INSTAGRAM FEED ↓
-                </a>
-            </div>
+        <div class="text-xs tracking-[3px] text-red-500/70 mb-1">THE ARCHIVE</div>
+        <h1 class="section-header tracking-tighter">Portfolio</h1>
+        <p class="text-lg text-zinc-400 mt-1">American Traditional, custom work, small pieces, cover-ups &amp; more</p>
+      </div>
 
-            <!-- CURATED MASONRY GALLERY (editable via Admin) -->
-            <div id="portfolio-grid" class="portfolio-grid"></div>
+      <a href="#instagram-feed" class="inline-flex items-center text-sm text-zinc-400 hover:text-white transition-colors">
+        LIVE INSTAGRAM FEED ↓
+      </a>
+    </div>
 
-            <!-- LIVE INSTAGRAM FEED -->
-            <div id="instagram-feed" class="mt-24">
-                <div class="flex items-center justify-between mb-8">
-                    <div>
-                        <h2 class="section-header">LIVE FROM INSTAGRAM</h2>
-                        <p class="text-zinc-400">@thankqtattoos • Fresh ink straight from the chair</p>
-                    </div>
-                    <a href="https://www.instagram.com/thankqtattoos/" target="_blank" 
-                       class="btn btn-secondary flex items-center gap-2">
-                        OPEN INSTAGRAM
-                        <span class="text-lg">↗</span>
-                    </a>
-                </div>
-                
-                <!-- YOUR ELFSIGHT EMBED -->
-                <!-- Elfsight Instagram Feed | Untitled Instagram Feed -->
-                <script src="https://elfsightcdn.com/platform.js" async></script>
-                <div class="elfsight-app-43a252c9-332e-4d97-aef9-ad467b3055ed" data-elfsight-app-lazy></div>
-            </div>
+    <!-- STYLE FILTERS (populated + wired by common.js) -->
+    <div id="style-filters" class="filter-bar"></div>
+
+    <!-- LIVE SUPABASE MASONRY GALLERY -->
+    <div id="portfolio-grid" class="portfolio-grid"></div>
+
+    <div class="mt-4 text-xs text-zinc-500">Images load live from Supabase Storage. New uploads from the admin appear instantly.</div>
+
+    <!-- INSTAGRAM FEED SECTION -->
+    <div id="instagram-feed" class="mt-20">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="section-header text-3xl">LIVE FROM INSTAGRAM</h2>
+          <p class="text-zinc-400">@thankqtattoos • Fresh ink straight from the chair</p>
         </div>
-    </main>
+        <a href="https://www.instagram.com/thankqtattoos/" target="_blank"
+           class="btn btn-secondary flex items-center gap-2 text-sm">
+          OPEN INSTAGRAM <span class="text-lg">↗</span>
+        </a>
+      </div>
+
+      <!-- Elfsight or other embed — replace this block with your own embed code -->
+      <script src="https://elfsightcdn.com/platform.js" async></script>
+      <div class="elfsight-app-43a252c9-332e-4d97-aef9-ad467b3055ed" data-elfsight-app-lazy></div>
+      <!-- End embed slot -->
+    </div>
+  </div>
 
     <!-- FOOTER -->
     <footer class="bg-black py-12 border-t border-zinc-900">
-        <div class="max-w-screen-2xl mx-auto px-6 text-center text-sm text-zinc-500">
-            <p>© Thank Q Tattoos — Qwami Tucker • Inside Bangarang Tattooing Co., Killeen, Texas</p>
-            <p class="mt-2">
-                <a href="index.html" class="hover:text-white">Home</a> • 
-                <a href="admin.html" class="hover:text-white">Admin</a> • 
-                <a href="https://www.instagram.com/thankqtattoos/" target="_blank" class="hover:text-white">@thankqtattoos</a>
-            </p>
-        </div>
+      <div class="max-w-screen-2xl mx-auto px-6 text-center text-sm text-zinc-500">
+        <p>© <span id="year"></span> Thank Q Tattoos — Qwami Tucker • Inside Bangarang Tattooing Co., Killeen, Texas</p>
+        <p class="mt-2">
+          <a href="index.html" class="hover:text-white">Home</a> •
+          <a href="admin.html" class="hover:text-white">Admin</a> •
+          <a href="https://www.instagram.com/thankqtattoos/" target="_blank" class="hover:text-white">@thankqtattoos</a>
+        </p>
+      </div>
     </footer>
 
     <script src="js/common.js"></script>
-    <script>
-        // Re-init after load
-        window.addEventListener('load', () => {
-            if (typeof window.ThankQ !== 'undefined') {
-                window.ThankQ.loadDynamicContent();
-            }
-        });
-    </script>
 </body>
 </html>

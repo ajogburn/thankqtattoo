@@ -18,6 +18,10 @@
   <!-- Tailwind Play CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="css/styles.css">
+
+  <!-- Supabase (required for live portfolio + admin) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-client.js"></script>
   <script>
     // Tailwind script config
     tailwind.config = {
@@ -251,8 +255,8 @@
     // Page-specific: year + slight hero tweaks
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Optional: make hero image slightly different on load or add video note
-    // To use a video background instead of image: replace the header style with video element + overlay.
+    // The heavy lifting (Supabase portfolio + settings + particles) happens inside js/common.js
+    // which is now fully Supabase-aware. See js/supabase-client.js for connection details.
   </script>
 
   <!-- 

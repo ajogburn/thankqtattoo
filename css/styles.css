@@ -237,6 +237,15 @@ body {
   .masonry-grid { column-count: 5; }
 }
 
+/* Improved masonry for portfolio page (more breathing room) */
+.portfolio-masonry {
+  column-count: 2;
+  column-gap: 1rem;
+}
+@media (min-width: 640px) { .portfolio-masonry { column-count: 3; } }
+@media (min-width: 1024px) { .portfolio-masonry { column-count: 4; } }
+@media (min-width: 1400px) { .portfolio-masonry { column-count: 5; } }
+
 .gallery-item {
   break-inside: avoid;
   margin-bottom: 0.75rem;
@@ -310,6 +319,14 @@ body {
   border-color: var(--accent);
 }
 
+/* Portfolio page filter bar */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
 /* Lightbox */
 .lightbox {
   position: fixed;
@@ -365,6 +382,47 @@ body {
 .lightbox-close:hover,
 .lightbox-nav:hover {
   background: var(--accent);
+}
+
+/* Lightbox zoom controls */
+.lightbox-zoom-controls {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  background: rgba(0,0,0,0.65);
+  padding: 4px 8px;
+  border-radius: 9999px;
+  z-index: 20;
+}
+.lightbox-zoom-controls button {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 18px;
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 9999px;
+  background: transparent;
+  transition: all .1s ease;
+}
+.lightbox-zoom-controls button:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Zoomable image inside lightbox */
+#lightbox-image {
+  transition: transform 0.2s cubic-bezier(0.23, 1.0, 0.32, 1);
+  cursor: grab;
+  touch-action: none;
+}
+#lightbox-image.zoomed {
+  cursor: grab;
 }
 
 /* Forms */
@@ -425,6 +483,35 @@ body {
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 1rem;
+}
+
+/* Upload progress */
+.progress-bar {
+  height: 6px;
+  background: #27272a;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.progress-bar > div {
+  height: 100%;
+  background: linear-gradient(to right, var(--accent), var(--accent-light));
+  transition: width 120ms linear;
+  width: 0%;
+}
+
+.upload-card {
+  background: #161618;
+  border: 1px solid #27272a;
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+}
+
+/* Admin table / list rows */
+.admin-row {
+  transition: background-color .1s ease;
+}
+.admin-row:hover {
+  background-color: #1f1f22;
 }
 
 /* Ink / decorative */

@@ -1,5 +1,9 @@
 # ThankQTattoo — Official Website
 
+**Modern, dark, edgy, Supabase-powered** website for tattoo artist **Qwami Tucker** (@thankqtattoos).
+
+> Portfolio, admin uploads, and editable site content are now backed by real Supabase (Storage + Postgres + Auth). See `SUPABASE-SETUP.md` to get the database ready in ~5 minutes.
+
 Modern, dark, edgy, immersive website for tattoo artist **Qwami Tucker** (@thankqtattoos).
 
 **Live vibe:** Deep blacks, blood reds, high-contrast ink textures, bold typography, smooth animations, full-bleed imagery.
@@ -105,13 +109,20 @@ Every public HTML file runs a small script on load that reads `localStorage.than
 
 ## Production Recommendations & Upgrades
 
-### 1. Real Backend + Database (Recommended for serious use)
-Replace the localStorage CMS with one of these (both deploy easily on Vercel/Netlify):
+### 1. Real Backend + Database (NOW IMPLEMENTED)
+This site is now fully connected to **Supabase**:
 
-- **Supabase** (free tier, Postgres + Storage + Auth): Best match.
-  - Create tables: `portfolio`, `content`, `submissions`.
-  - Use Supabase Storage for real image uploads (much better than base64).
-  - Row Level Security + simple password or magic link for admin.
+- Portfolio images & metadata live in the `portfolio` table + `tattoo-images` Storage bucket
+- Site content (bio, tagline, contact info) lives in `site_settings`
+- Admin dashboard uses real **Supabase Auth** (email + password)
+- All public pages load live data — changes appear instantly
+
+**Setup instructions:** See [SUPABASE-SETUP.md](./SUPABASE-SETUP.md) for the exact SQL you must run once + bucket + auth configuration.
+
+The old localStorage system is still used only as a graceful fallback when Supabase is unreachable and for form submissions (for now).
+
+### Previous localStorage-only mode (deprecated for new deploys)
+The previous version used only browser localStorage. All the old capabilities still exist as fallbacks.
 - **Firebase** (Firestore + Storage + Auth)
 - **PlanetScale + Vercel serverless functions** or **Turso**
 
@@ -199,18 +210,19 @@ Current default: `thankq2025`
 
 ```
 thankqtattoo/
-├── index.html          # Primary landing + all sections
-├── portfolio.html      # Full gallery experience
+├── index.html
+├── portfolio.html          # Full masonry gallery + filters (Supabase powered)
 ├── about.html
 ├── services.html
 ├── contact.html
-├── admin.html
+├── admin.html              # Powerful Supabase-backed admin (Auth + CRUD + uploads w/ progress)
+├── SUPABASE-SETUP.md       # REQUIRED: Run the SQL here first
 ├── README.md
-├── img/                # Your existing screenshots (use or replace)
-│   └── *.png
-└── (optional later)
-    ├── css/
-    └── js/
+├── css/styles.css
+├── js/
+│   ├── common.js           # Shared logic, particles, nav, rendering
+│   └── supabase-client.js  # Supabase config + all CRUD + storage helpers
+└── img/                    # Static hero/about images (keep or replace)
 ```
 
 ## Support & Customization
