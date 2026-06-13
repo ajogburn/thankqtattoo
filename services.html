@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Services &amp; Booking — ThankQTattoo | Qwami Tucker</title>
+  <meta name="description" content="American Traditional tattoos, custom work, small pieces, and cover-ups by Qwami Tucker. Book a consultation at Bangarang Tattooing Company.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Oswald:wght@500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/styles.css">
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { 'display': ['Oswald', 'system-ui', 'sans-serif'], 'serif': ['Playfair Display', 'Georgia', 'serif'] } } } };
+  </script>
+</head>
+<body class="bg-[#0a0a0c] text-zinc-200">
+  <!-- NAVBAR -->
+  <nav class="nav fixed top-0 left-0 right-0 z-50">
+    <div class="max-w-7xl mx-auto px-5 md:px-8">
+      <div class="flex items-center justify-between h-20">
+        <a href="index.html" class="flex items-center gap-x-3">
+          <img src="img/Screenshot 2026-06-12 194358_edited.png" alt="ThankQTattoo" class="h-9 w-9 object-contain rounded" />
+          <span class="logo-font text-2xl md:text-3xl tracking-tighter font-bold">ThankQTattoo</span>
+        </a>
+
+        <!-- Desktop Nav -->
+        <div class="hidden md:flex items-center gap-x-9 text-sm font-medium tracking-[0.3px]">
+          <a href="portfolio.html" class="nav-link">Portfolio</a>
+          <a href="about.html" class="nav-link">About</a>
+          <a href="services.html" class="nav-link">Services</a>
+          <a href="contact.html" class="nav-link">Contact</a>
+        </div>
+
+        <div class="hidden md:block">
+          <a href="#book" class="btn btn-primary text-sm px-6 py-2.5">BOOK CONSULTATION</a>
+        </div>
+
+        <!-- Mobile Hamburger -->
+        <button id="mobile-toggle" class="md:hidden p-2 text-white" aria-label="Menu" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="mobile-menu md:hidden border-t border-zinc-800 bg-[#0a0a0c]">
+      <div class="px-5 py-6 flex flex-col gap-y-4 text-lg font-medium">
+        <a href="portfolio.html" class="nav-link">Portfolio</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="services.html" class="nav-link">Services</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+        <div class="pt-3">
+          <a href="#book" class="btn btn-primary w-full justify-center">Book Consultation</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="h-20"></div>
+
+  <div class="max-w-6xl mx-auto px-5 md:px-8 pt-8 pb-11">
+    <div class="uppercase text-xs tracking-[3px] text-red-500/70 mb-1">THE PROCESS</div>
+    <h1 class="section-header">Services &amp; Booking</h1>
+    <p class="max-w-xl mt-3 text-lg text-zinc-400">Consultations are required for all new projects. I work by appointment only and take the time to understand exactly what you want before we begin.</p>
+  </div>
+
+  <!-- SPECIALTIES -->
+  <div class="max-w-6xl mx-auto px-5 md:px-8">
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="card p-6">
+        <div class="text-red-500 text-xs tracking-[1.5px] mb-3">CORE SPECIALTY</div>
+        <div class="font-semibold text-2xl mb-3">American Traditional</div>
+        <ul class="text-sm space-y-[5px] text-zinc-400">
+          <li>• Bold linework &amp; saturated color</li>
+          <li>• Classic motifs (rose, dagger, eagle, panther, anchor, skull, etc.)</li>
+          <li>• Flash &amp; custom adaptations</li>
+          <li>• Work designed to age gracefully</li>
+        </ul>
+      </div>
+      <div class="card p-6">
+        <div class="font-semibold text-2xl mb-3">Small Pieces &amp; Jammers</div>
+        <p class="text-sm text-zinc-400">Compact, powerful tattoos ideal for wrists, fingers, ribs, behind the ear, or anywhere you want something meaningful without a large commitment. Great first tattoos.</p>
+      </div>
+      <div class="card p-6">
+        <div class="font-semibold text-2xl mb-3">Custom &amp; Illustrative</div>
+        <p class="text-sm text-zinc-400">Bring your references or ideas. I design from scratch or adapt your vision into something that will translate beautifully as permanent ink. Predrawn flash available too.</p>
+      </div>
+      <div class="card p-6">
+        <div class="font-semibold text-2xl mb-3">Cover-ups &amp; Reworks</div>
+        <p class="text-sm text-zinc-400">Thoughtful transformations of existing tattoos. Not every old tattoo can be completely erased, but almost everything can be dramatically improved. We’ll discuss realistic options.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- POLICIES -->
+  <div class="max-w-5xl mx-auto px-5 md:px-8 mt-16">
+    <div class="border border-zinc-800 rounded-2xl p-7 md:p-9 bg-[#111113]">
+      <div class="font-semibold text-lg mb-5">Studio Policies</div>
+      <div class="grid md:grid-cols-2 gap-x-9 gap-y-7 text-sm">
+        <div>
+          <div class="font-medium text-white mb-1">Consultations</div>
+          <p class="text-zinc-400">Required for all new clients and larger projects. This can be done in person at the shop or via text/DM with good reference photos and a clear description.</p>
+        </div>
+        <div>
+          <div class="font-medium text-white mb-1">Deposits</div>
+          <p class="text-zinc-400">A non-refundable deposit ($80–150 depending on project size) is required to secure your appointment date. It is applied toward the final cost of the tattoo.</p>
+        </div>
+        <div>
+          <div class="font-medium text-white mb-1">Cancellations &amp; Reschedules</div>
+          <p class="text-zinc-400">Please give at least 48 hours notice. Deposits for no-shows or late cancellations are forfeited. Multiple cancellations may affect future booking priority.</p>
+        </div>
+        <div>
+          <div class="font-medium text-white mb-1">Pricing</div>
+          <p class="text-zinc-400">Custom work is priced by the piece. Small pieces start at a minimum. You’ll receive a quote after we discuss size, placement, and complexity during consultation.</p>
+        </div>
+        <div>
+          <div class="font-medium text-white mb-1">Aftercare</div>
+          <p class="text-zinc-400">Detailed aftercare instructions are provided in person and via text. I’m available for follow-up questions as your tattoo heals.</p>
+        </div>
+        <div>
+          <div class="font-medium text-white mb-1">Availability</div>
+          <p class="text-zinc-400" data-content="availability">Currently booking 3–5 weeks out. Text 240-330-9873 to begin a consultation.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOOKING FORM -->
+  <section id="book" class="max-w-3xl mx-auto px-5 md:px-8 py-16">
+    <div class="mb-8">
+      <div class="uppercase tracking-[2.5px] text-xs text-red-500/70">NEXT STEP</div>
+      <h2 class="text-4xl font-semibold tracking-[-1.2px]">Book a Consultation</h2>
+      <p class="text-zinc-400 mt-2">Fill out the form below. I’ll text you within 1–2 business days to confirm details and availability.</p>
+    </div>
+
+    <form class="thankq-form card p-7 md:p-8 space-y-5" action="#" method="POST">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs tracking-widest mb-1.5 text-zinc-400">YOUR NAME</label>
+          <input type="text" name="name" required class="form-input">
+        </div>
+        <div>
+          <label class="block text-xs tracking-widest mb-1.5 text-zinc-400">PHONE (PREFERRED)</label>
+          <input type="tel" name="phone" required class="form-input" placeholder="240-555-0199">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs tracking-widest mb-1.5 text-zinc-400">EMAIL</label>
+          <input type="email" name="email" required class="form-input">
+        </div>
+        <div>
+          <label class="block text-xs tracking-widest mb-1.5 text-zinc-400">STYLE / TYPE</label>
+          <select name="style" class="form-select">
+            <option>American Traditional</option>
+            <option>Small Pieces / Jammers</option>
+            <option>Custom / Illustrative</option>
+            <option>Cover-up</option>
+            <option>Other / Not sure yet</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs tracking-widest mb-1.5 text-zinc-400">APPROXIMATE SIZE</label>
+          <input type="text" name="size" class="form-input" placeholder="3x4 inch, palm size, half sleeve, etc.">
+        </div>
+        <div>
+          <label class="block text-xs tracking-widest mb-1.5 text-zinc-400">PREFERRED TIMING</label>
+          <input type="text" name="timing" class="form-input" placeholder="ASAP, next 6 weeks, flexible...">
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs tracking-widest mb-1.5 text-zinc-400">TELL ME ABOUT THE PIECE</label>
+        <textarea name="message" required class="form-textarea" placeholder="Placement, references, meaning, existing tattoos in the area, etc. The more detail the better."></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-full py-3.5 text-base">SUBMIT CONSULTATION REQUEST</button>
+      <p class="text-center text-xs text-zinc-500">You can also text <span data-content="phone" class="font-medium text-zinc-300">240-330-9873</span> directly for faster response.</p>
+    </form>
+  </section>
+
+  <footer class="border-t border-zinc-800 bg-[#0a0a0c] py-8">
+    <div class="max-w-6xl mx-auto px-5 md:px-8 text-xs text-zinc-400 flex flex-col md:flex-row justify-between gap-y-1">
+      <div>© <span id="year"></span> Thank Q Tattoos — Killeen, TX</div>
+      <div>Text 240-330-9873 • <a href="contact.html">More contact options</a></div>
+    </div>
+  </footer>
+
+  <div id="global-toast" class="toast"></div>
+
+  <script src="js/common.js"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

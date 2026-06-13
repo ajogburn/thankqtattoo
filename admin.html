@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — ThankQTattoo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Oswald:wght@500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/styles.css">
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { 'display': ['Oswald', 'system-ui', 'sans-serif'], 'serif': ['Playfair Display', 'Georgia', 'serif'] } } } };
+  </script>
+  <style>
+    .admin-main { max-width: 1180px; margin: 0 auto; padding: 0 1.25rem; }
+    .stat { background:#161618; border:1px solid #27272a; border-radius:12px; padding:1rem 1.25rem; }
+  </style>
+</head>
+<body class="bg-[#0a0a0c] text-zinc-200">
+  <!-- ADMIN HEADER (consistent branding) -->
+  <nav class="nav fixed top-0 left-0 right-0 z-50 border-b border-zinc-800">
+    <div class="max-w-7xl mx-auto px-5 md:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center gap-x-3">
+          <a href="index.html" class="flex items-center gap-x-2">
+            <img src="img/Screenshot 2026-06-12 194358_edited.png" alt="ThankQTattoo" class="h-8 w-8 object-contain rounded" />
+            <span class="logo-font text-2xl md:text-3xl tracking-tighter font-bold">ThankQTattoo</span>
+          </a>
+          <div class="text-[10px] px-2.5 py-px bg-red-950 text-red-400 rounded tracking-[1.5px]">ADMIN</div>
+        </div>
+
+        <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
+          <a href="portfolio.html" class="nav-link">Portfolio</a>
+          <a href="about.html" class="nav-link">About</a>
+          <a href="services.html" class="nav-link">Services</a>
+          <a href="contact.html" class="nav-link">Contact</a>
+        </div>
+
+        <div class="flex items-center gap-x-3 text-sm">
+          <a href="index.html" class="text-zinc-400 hover:text-white px-2">← View Site</a>
+          <button onclick="logoutAdmin()" class="px-4 py-1.5 border border-zinc-700 rounded-full hover:bg-zinc-900 text-xs">LOGOUT</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="h-16"></div>
+
+  <!-- LOGIN SCREEN -->
+  <div id="login-screen" class="max-w-[380px] mx-auto pt-16 px-6">
+    <div class="card p-8">
+      <div class="text-center">
+        <div class="flex items-center justify-center gap-x-2 mb-1">
+          <img src="img/Screenshot 2026-06-12 194358_edited.png" alt="ThankQTattoo" class="h-10 w-10 object-contain" />
+          <span class="logo-font text-4xl tracking-tighter">ThankQTattoo</span>
+        </div>
+        <div class="text-sm text-red-500/90 tracking-widest mb-7">ADMIN DASHBOARD</div>
+      </div>
+
+      <form id="login-form" onsubmit="handleLogin(event)">
+        <label class="block text-xs tracking-widest mb-2 text-zinc-400">PASSWORD</label>
+        <input id="admin-pass" type="password" class="form-input mb-5" placeholder="Enter admin password" autocomplete="current-password" required>
+        <button type="submit" class="btn btn-primary w-full">LOGIN</button>
+      </form>
+
+      <div class="mt-6 text-[10px] text-center text-zinc-500 leading-snug">
+        Demo password: <span class="font-mono text-red-400/90">thankq2025</span><br>
+        Change this in production (see README).
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="hidden admin-main pt-8 pb-16">
+    <!-- Header stats -->
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-y-3 mb-8">
+      <div>
+        <div class="uppercase text-xs tracking-[2.5px] text-red-500/80">CMS • LOCAL ONLY</div>
+        <h1 class="text-4xl tracking-tighter font-semibold">Dashboard</h1>
+      </div>
+      <div class="flex gap-3 text-xs">
+        <button onclick="exportAllData()" class="btn btn-ghost btn-sm">EXPORT BACKUP (JSON)</button>
+        <button onclick="importDataPrompt()" class="btn btn-ghost btn-sm">IMPORT JSON</button>
+        <button onclick="resetToDefaults()" class="btn btn-ghost btn-sm text-red-400">RESET ALL DATA</button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+      <div class="stat">
+        <div class="text-xs text-zinc-400">PORTFOLIO PIECES</div>
+        <div id="stat-portfolio" class="text-4xl font-semibold tabular-nums mt-1">—</div>
+      </div>
+      <div class="stat">
+        <div class="text-xs text-zinc-400">FORM SUBMISSIONS</div>
+        <div id="stat-submissions" class="text-4xl font-semibold tabular-nums mt-1">—</div>
+      </div>
+      <div class="stat">
+        <div class="text-xs text-zinc-400">LAST UPDATED</div>
+        <div id="stat-updated" class="text-base mt-2 text-zinc-300">—</div>
+      </div>
+      <div class="stat">
+        <div class="text-xs text-zinc-400">QUICK LINKS</div>
+        <div class="flex flex-wrap gap-x-2 gap-y-px mt-2 text-sm">
+          <a href="portfolio.html" target="_blank" class="underline">Portfolio</a>
+          <a href="index.html" target="_blank" class="underline">Home</a>
+          <a href="services.html#book" target="_blank" class="underline">Booking</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="flex border-b border-zinc-800 mb-1 text-sm">
+      <button onclick="switchTab('portfolio')" id="tab-portfolio" class="admin-tab active font-medium">Portfolio</button>
+      <button onclick="switchTab('content')" id="tab-content" class="admin-tab font-medium">Content</button>
+      <button onclick="switchTab('submissions')" id="tab-submissions" class="admin-tab font-medium">Submissions</button>
+      <button onclick="switchTab('settings')" id="tab-settings" class="admin-tab font-medium">Settings</button>
+    </div>
+
+    <!-- PORTFOLIO TAB -->
+    <div id="panel-portfolio" class="tab-panel">
+      <div class="flex items-center justify-between py-4">
+        <div class="text-sm font-medium">Manage Portfolio Images &amp; Metadata</div>
+        <button onclick="showAddImageModal()" class="btn btn-primary btn-sm">+ ADD NEW IMAGE</button>
+      </div>
+
+      <div id="admin-portfolio-list" class="space-y-2"></div>
+    </div>
+
+    <!-- CONTENT TAB -->
+    <div id="panel-content" class="tab-panel hidden">
+      <div class="py-4 text-sm font-medium">Edit Public Site Content</div>
+      <form id="content-form" onsubmit="saveContent(event)" class="space-y-5 max-w-3xl">
+        <div>
+          <label class="text-xs text-zinc-400 tracking-wider block mb-1.5">TAGLINE (Hero &amp; displays)</label>
+          <input id="c-tagline" type="text" class="form-input">
+        </div>
+        <div>
+          <label class="text-xs text-zinc-400 tracking-wider block mb-1.5">BIO (About page + teaser)</label>
+          <textarea id="c-bio" class="form-textarea" rows="7"></textarea>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div>
+            <label class="text-xs text-zinc-400 tracking-wider block mb-1.5">CONSULTATION PHONE</label>
+            <input id="c-phone" type="text" class="form-input">
+          </div>
+          <div>
+            <label class="text-xs text-zinc-400 tracking-wider block mb-1.5">SHOP PHONE</label>
+            <input id="c-shopphone" type="text" class="form-input">
+          </div>
+          <div>
+            <label class="text-xs text-zinc-400 tracking-wider block mb-1.5">SHOP NAME</label>
+            <input id="c-shopname" type="text" class="form-input">
+          </div>
+          <div>
+            <label class="text-xs text-zinc-400 tracking-wider block mb-1.5">ADDRESS</label>
+            <input id="c-address" type="text" class="form-input">
+          </div>
+        </div>
+        <div>
+          <label class="text-xs text-zinc-400 tracking-wider block mb-1.5">AVAILABILITY NOTE</label>
+          <input id="c-availability" type="text" class="form-input">
+        </div>
+
+        <div class="flex gap-3 pt-2">
+          <button type="submit" class="btn btn-primary">SAVE CHANGES</button>
+          <button type="button" onclick="loadContentIntoForm()" class="btn btn-ghost">RESET FORM FROM CURRENT</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- SUBMISSIONS TAB -->
+    <div id="panel-submissions" class="tab-panel hidden">
+      <div class="flex items-center justify-between py-4">
+        <div class="text-sm font-medium">Form Submissions &amp; Booking Requests</div>
+        <button onclick="exportSubmissionsCSV()" class="btn btn-secondary btn-sm">EXPORT CSV</button>
+      </div>
+      <div id="admin-submissions-list" class="space-y-3"></div>
+      <div class="text-xs text-zinc-500 mt-4">Submissions are stored only in this browser (localStorage). For production, connect a real form backend + email service.</div>
+    </div>
+
+    <!-- SETTINGS TAB -->
+    <div id="panel-settings" class="tab-panel hidden">
+      <div class="max-w-md py-4">
+        <div class="text-sm font-medium mb-4">Admin Settings</div>
+
+        <div class="card p-6">
+          <div class="text-xs tracking-widest text-zinc-400 mb-2">CHANGE ADMIN PASSWORD (DEMO)</div>
+          <input id="new-pass" type="text" class="form-input mb-3" placeholder="New password">
+          <button onclick="changeAdminPassword()" class="btn btn-secondary w-full">UPDATE PASSWORD</button>
+          <div class="text-[10px] mt-3 text-amber-400/80">This is stored in localStorage. Replace with real auth for live site.</div>
+        </div>
+
+        <div class="mt-7">
+          <button onclick="logoutAdmin()" class="text-xs px-4 py-2 border border-zinc-700 rounded hover:bg-zinc-900">LOG OUT OF ADMIN</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD / EDIT IMAGE MODAL -->
+  <div id="image-modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-[999]" onclick="if (event.target.id==='image-modal') hideImageModal()">
+    <div class="card w-full max-w-lg mx-4 p-6" onclick="event.stopImmediatePropagation()">
+      <div class="font-semibold text-xl mb-4" id="modal-title">Add New Image</div>
+
+      <form id="image-form" onsubmit="saveImageFromModal(event)">
+        <input type="hidden" id="edit-id">
+
+        <div class="mb-4">
+          <label class="text-xs tracking-widest text-zinc-400 block mb-1.5">IMAGE FILE (JPG / PNG / WEBP)</label>
+          <input type="file" id="image-file" accept="image/*" class="block w-full text-sm file:mr-3 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-white/10 file:text-white">
+          <div class="text-[10px] mt-1 text-zinc-500">Images are converted to base64 and stored locally. Keep file sizes reasonable (&lt;1.5MB ideal).</div>
+        </div>
+
+        <div class="mb-4">
+          <label class="text-xs tracking-widest text-zinc-400 block mb-1.5">CAPTION / DESCRIPTION</label>
+          <input type="text" id="image-caption" class="form-input" placeholder="Bold traditional rose and dagger on bicep">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="text-xs tracking-widest text-zinc-400 block mb-1.5">STYLE TAG</label>
+            <select id="image-style" class="form-select">
+              <option>American Traditional</option>
+              <option>Small Pieces</option>
+              <option>Custom</option>
+              <option>Coverups</option>
+              <option>Studio</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs tracking-widest text-zinc-400 block mb-1.5">DATE (OPTIONAL)</label>
+            <input type="text" id="image-date" class="form-input" placeholder="2025-05">
+          </div>
+        </div>
+
+        <div class="flex gap-3 mt-7">
+          <button type="button" onclick="hideImageModal()" class="btn btn-ghost flex-1">CANCEL</button>
+          <button type="submit" class="btn btn-primary flex-1" id="modal-submit-btn">ADD TO PORTFOLIO</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="global-toast" class="toast"></div>
+
+  <script src="js/common.js"></script>
+  <script>
+    // ==================== ADMIN SPECIFIC ====================
+    const ADMIN_PASSWORD_KEY = 'thankq_admin_pass';
+    let currentAdminPass = 'thankq2025'; // default
+
+    function getAdminPass() {
+      return localStorage.getItem(ADMIN_PASSWORD_KEY) || currentAdminPass;
+    }
+
+    function setAdminPass(pw) {
+      localStorage.setItem(ADMIN_PASSWORD_KEY, pw);
+    }
+
+    function isAdminLoggedIn() {
+      return sessionStorage.getItem('thankq_admin_auth') === 'true';
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const input = document.getElementById('admin-pass').value.trim();
+      const correct = getAdminPass();
+
+      if (input === correct) {
+        sessionStorage.setItem('thankq_admin_auth', 'true');
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('dashboard').classList.remove('hidden');
+        initDashboard();
+      } else {
+        alert('Incorrect password');
+      }
+    }
+
+    function logoutAdmin() {
+      sessionStorage.removeItem('thankq_admin_auth');
+      window.location.reload();
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+      document.getElementById('panel-' + tab).classList.remove('hidden');
+
+      document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+    }
+
+    function initDashboard() {
+      updateStats();
+      renderPortfolioAdminList();
+      loadContentIntoForm();
+      renderSubmissionsList();
+
+      // Default to portfolio tab
+      switchTab('portfolio');
+    }
+
+    function updateStats() {
+      const portfolio = ThankQ.loadFromStorage('thankq_portfolio', ThankQ.DEFAULT_PORTFOLIO);
+      const subs = ThankQ.loadFromStorage('thankq_submissions', []);
+
+      document.getElementById('stat-portfolio').textContent = portfolio.length;
+      document.getElementById('stat-submissions').textContent = subs.length;
+
+      const last = localStorage.getItem('thankq_last_updated');
+      document.getElementById('stat-updated').textContent = last ? new Date(last).toLocaleDateString() : 'Just now';
+    }
+
+    // ===== PORTFOLIO ADMIN =====
+    function renderPortfolioAdminList() {
+      const container = document.getElementById('admin-portfolio-list');
+      const items = ThankQ.loadFromStorage('thankq_portfolio', ThankQ.DEFAULT_PORTFOLIO);
+      container.innerHTML = '';
+
+      items.forEach((item, idx) => {
+        const row = document.createElement('div');
+        row.className = 'flex items-center gap-4 bg-[#161618] border border-zinc-800 rounded-2xl p-3';
+        row.innerHTML = `
+          <img src="${item.url}" class="portfolio-thumb flex-shrink-0" alt="">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-x-2">
+              <span class="style-badge">${item.style || 'Custom'}</span>
+              <span class="text-xs text-zinc-400">${item.date || ''}</span>
+            </div>
+            <div class="font-medium truncate pr-3">${item.caption || '(no caption)'}</div>
+          </div>
+          <div class="flex gap-2 flex-shrink-0">
+            <button class="btn btn-ghost btn-sm text-xs" onclick="editPortfolioItem(${item.id})">EDIT</button>
+            <button class="btn btn-ghost btn-sm text-xs text-red-400/90" onclick="deletePortfolioItem(${item.id})">DELETE</button>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    let currentEditId = null;
+
+    function showAddImageModal() {
+      document.getElementById('modal-title').textContent = 'Add New Image';
+      document.getElementById('modal-submit-btn').textContent = 'ADD TO PORTFOLIO';
+      document.getElementById('image-form').reset();
+      document.getElementById('edit-id').value = '';
+      currentEditId = null;
+      document.getElementById('image-modal').classList.remove('hidden');
+      document.getElementById('image-modal').classList.add('flex');
+    }
+
+    function editPortfolioItem(id) {
+      const items = ThankQ.loadFromStorage('thankq_portfolio', ThankQ.DEFAULT_PORTFOLIO);
+      const item = items.find(i => i.id === id);
+      if (!item) return;
+
+      currentEditId = id;
+      document.getElementById('modal-title').textContent = 'Edit Image';
+      document.getElementById('modal-submit-btn').textContent = 'SAVE CHANGES';
+      document.getElementById('edit-id').value = id;
+      document.getElementById('image-caption').value = item.caption || '';
+      document.getElementById('image-style').value = item.style || 'American Traditional';
+      document.getElementById('image-date').value = item.date || '';
+
+      // We cannot prefill file input for security reasons — user must reselect if changing image
+      document.getElementById('image-file').value = '';
+
+      document.getElementById('image-modal').classList.remove('hidden');
+      document.getElementById('image-modal').classList.add('flex');
+    }
+
+    function hideImageModal() {
+      const modal = document.getElementById('image-modal');
+      modal.classList.remove('flex');
+      modal.classList.add('hidden');
+    }
+
+    async function saveImageFromModal(e) {
+      e.preventDefault();
+
+      const fileInput = document.getElementById('image-file');
+      const caption = document.getElementById('image-caption').value.trim();
+      const style = document.getElementById('image-style').value;
+      const date = document.getElementById('image-date').value.trim();
+      const editId = document.getElementById('edit-id').value;
+
+      let items = ThankQ.loadFromStorage('thankq_portfolio', ThankQ.DEFAULT_PORTFOLIO);
+
+      if (editId) {
+        // Editing existing
+        const itemIndex = items.findIndex(i => i.id == editId);
+        if (itemIndex > -1) {
+          items[itemIndex].caption = caption;
+          items[itemIndex].style = style;
+          items[itemIndex].date = date;
+
+          // If user selected a new file, replace the image
+          if (fileInput.files && fileInput.files[0]) {
+            const dataUrl = await fileToDataURL(fileInput.files[0]);
+            items[itemIndex].url = dataUrl;
+          }
+        }
+      } else {
+        // New image
+        if (!fileInput.files || !fileInput.files[0]) {
+          alert('Please select an image file.');
+          return;
+        }
+        const dataUrl = await fileToDataURL(fileInput.files[0]);
+        const newId = Math.max(0, ...items.map(i => i.id)) + 1 || Date.now();
+
+        items.unshift({
+          id: newId,
+          url: dataUrl,
+          caption,
+          style,
+          date: date || new Date().toISOString().slice(0,7)
+        });
+      }
+
+      ThankQ.saveToStorage('thankq_portfolio', items);
+      localStorage.setItem('thankq_last_updated', new Date().toISOString());
+
+      hideImageModal();
+      renderPortfolioAdminList();
+      updateStats();
+      ThankQ.showToast('Portfolio updated. Refresh public pages to see changes.');
+    }
+
+    function fileToDataURL(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function deletePortfolioItem(id) {
+      if (!confirm('Delete this portfolio piece?')) return;
+      let items = ThankQ.loadFromStorage('thankq_portfolio', ThankQ.DEFAULT_PORTFOLIO);
+      items = items.filter(i => i.id !== id);
+      ThankQ.saveToStorage('thankq_portfolio', items);
+      renderPortfolioAdminList();
+      updateStats();
+    }
+
+    // ===== CONTENT =====
+    function loadContentIntoForm() {
+      const c = ThankQ.loadFromStorage('thankq_content', ThankQ.DEFAULT_CONTENT);
+      document.getElementById('c-tagline').value = c.tagline || '';
+      document.getElementById('c-bio').value = c.bio || '';
+      document.getElementById('c-phone').value = c.phone || '';
+      document.getElementById('c-shopphone').value = c.shopPhone || '';
+      document.getElementById('c-shopname').value = c.shopName || '';
+      document.getElementById('c-address').value = c.address || '';
+      document.getElementById('c-availability').value = c.availability || '';
+    }
+
+    function saveContent(e) {
+      e.preventDefault();
+      const newContent = {
+        tagline: document.getElementById('c-tagline').value,
+        bio: document.getElementById('c-bio').value,
+        phone: document.getElementById('c-phone').value,
+        shopPhone: document.getElementById('c-shopphone').value,
+        shopName: document.getElementById('c-shopname').value,
+        address: document.getElementById('c-address').value,
+        availability: document.getElementById('c-availability').value
+      };
+      ThankQ.saveToStorage('thankq_content', newContent);
+      localStorage.setItem('thankq_last_updated', new Date().toISOString());
+      ThankQ.showToast('Site content updated. Public pages will reflect changes immediately.');
+      updateStats();
+    }
+
+    // ===== SUBMISSIONS =====
+    function renderSubmissionsList() {
+      const container = document.getElementById('admin-submissions-list');
+      const subs = ThankQ.loadFromStorage('thankq_submissions', []);
+
+      container.innerHTML = '';
+
+      if (subs.length === 0) {
+        container.innerHTML = `<div class="text-sm text-zinc-400 py-6 text-center border border-dashed border-zinc-800 rounded-2xl">No submissions yet. Forms on the live site will appear here.</div>`;
+        return;
+      }
+
+      subs.forEach((s, idx) => {
+        const el = document.createElement('div');
+        el.className = 'submission-card';
+        const date = new Date(s.ts).toLocaleString();
+
+        el.innerHTML = `
+          <div class="flex justify-between text-xs text-zinc-400">
+            <div>${date}</div>
+            <div class="font-mono text-[10px]">${s.id}</div>
+          </div>
+          <div class="mt-1 font-semibold">${s.name || '—'} <span class="font-normal text-zinc-400">• ${s.phone || s.email || ''}</span></div>
+          <div class="text-xs mt-1 text-red-400/90">${s.style || s.type || 'General'}</div>
+          <div class="text-sm mt-2 text-zinc-300">${(s.message || '').substring(0, 180)}${s.message && s.message.length > 180 ? '…' : ''}</div>
+          
+          <div class="mt-3 flex gap-x-2">
+            <button onclick="markSubmissionContacted(${idx})" class="text-xs px-3 py-1 border border-green-700/60 text-green-400 rounded-full hover:bg-green-950">MARK CONTACTED</button>
+            <button onclick="deleteSubmission(${idx})" class="text-xs px-3 py-1 border border-red-900/60 text-red-400/90 rounded-full hover:bg-red-950">DELETE</button>
+          </div>
+        `;
+        container.appendChild(el);
+      });
+    }
+
+    function markSubmissionContacted(index) {
+      const subs = ThankQ.loadFromStorage('thankq_submissions', []);
+      if (!subs[index]) return;
+      subs[index].contacted = true;
+      subs[index].contactedAt = new Date().toISOString();
+      ThankQ.saveToStorage('thankq_submissions', subs);
+      renderSubmissionsList();
+      ThankQ.showToast('Marked as contacted.');
+    }
+
+    function deleteSubmission(index) {
+      if (!confirm('Delete this submission?')) return;
+      const subs = ThankQ.loadFromStorage('thankq_submissions', []);
+      subs.splice(index, 1);
+      ThankQ.saveToStorage('thankq_submissions', subs);
+      renderSubmissionsList();
+      updateStats();
+    }
+
+    function exportSubmissionsCSV() {
+      const subs = ThankQ.loadFromStorage('thankq_submissions', []);
+      if (!subs.length) { alert('No submissions to export'); return; }
+
+      const headers = ['id','ts','name','phone','email','style','size','timing','message','type','contacted'];
+      let csv = headers.join(',') + '\n';
+
+      subs.forEach(s => {
+        const row = headers.map(h => {
+          let v = s[h] || '';
+          if (typeof v === 'string') v = v.replace(/"/g, '""');
+          return `"${v}"`;
+        });
+        csv += row.join(',') + '\n';
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `thankqtattoo_submissions_${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+    }
+
+    // ===== SETTINGS =====
+    function changeAdminPassword() {
+      const input = document.getElementById('new-pass').value.trim();
+      if (!input || input.length < 4) {
+        alert('Password must be at least 4 characters.');
+        return;
+      }
+      setAdminPass(input);
+      ThankQ.showToast('Admin password updated in this browser.');
+      document.getElementById('new-pass').value = '';
+    }
+
+    // ===== IMPORT / EXPORT / RESET =====
+    function exportAllData() {
+      const data = {
+        thankq_portfolio: ThankQ.loadFromStorage('thankq_portfolio', ThankQ.DEFAULT_PORTFOLIO),
+        thankq_content: ThankQ.loadFromStorage('thankq_content', ThankQ.DEFAULT_CONTENT),
+        thankq_submissions: ThankQ.loadFromStorage('thankq_submissions', []),
+        thankq_admin_pass: getAdminPass(),
+        exported: new Date().toISOString()
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `thankqtattoo_backup_${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+    }
+
+    function importDataPrompt() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'application/json';
+      input.onchange = async () => {
+        const file = input.files[0];
+        if (!file) return;
+        const text = await file.text();
+        try {
+          const data = JSON.parse(text);
+          if (data.thankq_portfolio) ThankQ.saveToStorage('thankq_portfolio', data.thankq_portfolio);
+          if (data.thankq_content) ThankQ.saveToStorage('thankq_content', data.thankq_content);
+          if (data.thankq_submissions) ThankQ.saveToStorage('thankq_submissions', data.thankq_submissions);
+          if (data.thankq_admin_pass) setAdminPass(data.thankq_admin_pass);
+          ThankQ.showToast('Data imported successfully. Reloading dashboard...');
+          setTimeout(() => window.location.reload(), 900);
+        } catch (err) {
+          alert('Invalid JSON backup file.');
+        }
+      };
+      input.click();
+    }
+
+    function resetToDefaults() {
+      if (!confirm('This will wipe all portfolio items, content edits, and submissions. Are you sure?')) return;
+      localStorage.removeItem('thankq_portfolio');
+      localStorage.removeItem('thankq_content');
+      localStorage.removeItem('thankq_submissions');
+      localStorage.removeItem('thankq_last_updated');
+      ThankQ.showToast('All data reset to defaults.');
+      setTimeout(() => window.location.reload(), 600);
+    }
+
+    // ==================== BOOT ADMIN ====================
+    function bootAdmin() {
+      // Seed a default password if none exists
+      if (!localStorage.getItem(ADMIN_PASSWORD_KEY)) {
+        localStorage.setItem(ADMIN_PASSWORD_KEY, currentAdminPass);
+      }
+
+      if (isAdminLoggedIn()) {
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('dashboard').classList.remove('hidden');
+        initDashboard();
+      } else {
+        // show login only
+        document.getElementById('dashboard').classList.add('hidden');
+      }
+
+      // Keyboard hint on login
+      const passInput = document.getElementById('admin-pass');
+      if (passInput) {
+        passInput.addEventListener('keydown', (e) => {
+          if (e.key === '?' && passInput.value === '') {
+            passInput.value = 'thankq2025';
+            e.preventDefault();
+          }
+        });
+      }
+    }
+
+    window.onload = bootAdmin;
+  </script>
+</body>
+</html>

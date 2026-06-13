@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio | ThankQTattoo - Qwami Tucker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Oswald:wght@500;600;700&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet">
+    <meta name="description" content="Portfolio of Qwami Tucker at Thank Q Tattoos - American Traditional, custom, small pieces, and cover-ups at Bangarang Tattooing Co. in Killeen, TX.">
+</head>
+<body class="bg-[#0a0a0c] text-white">
+
+  <!-- NAVBAR -->
+  <nav class="nav fixed top-0 left-0 right-0 z-50">
+    <div class="max-w-7xl mx-auto px-5 md:px-8">
+      <div class="flex items-center justify-between h-20">
+        <a href="index.html" class="flex items-center gap-x-3">
+          <img src="img/Screenshot 2026-06-12 194358_edited.png" alt="ThankQTattoo" class="h-9 w-9 object-contain rounded" />
+          <span class="logo-font text-2xl md:text-3xl tracking-tighter font-bold">ThankQTattoo</span>
+        </a>
+
+        <!-- Desktop Nav -->
+        <div class="hidden md:flex items-center gap-x-9 text-sm font-medium tracking-[0.3px]">
+          <a href="portfolio.html" class="nav-link">Portfolio</a>
+          <a href="about.html" class="nav-link">About</a>
+          <a href="services.html" class="nav-link">Services</a>
+          <a href="contact.html" class="nav-link">Contact</a>
+        </div>
+
+        <div class="hidden md:block">
+          <a href="services.html#book" class="btn btn-primary text-sm px-6 py-2.5">BOOK CONSULTATION</a>
+        </div>
+
+        <!-- Mobile Hamburger -->
+        <button id="mobile-toggle" class="md:hidden p-2 text-white" aria-label="Menu" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="mobile-menu md:hidden border-t border-zinc-800 bg-[#0a0a0c]">
+      <div class="px-5 py-6 flex flex-col gap-y-4 text-lg font-medium">
+        <a href="portfolio.html" class="nav-link">Portfolio</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="services.html" class="nav-link">Services</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+        <div class="pt-3">
+          <a href="services.html#book" class="btn btn-primary w-full justify-center">Book Consultation</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="h-20"></div>
+
+  <!-- HERO -->
+  <section class="hero relative min-h-[60vh] flex items-center" style="background-image: linear-gradient(rgba(10,10,12,0.7), rgba(10,10,12,0.9)), url('img/Screenshot%202026-06-12%20193538_edited.png');">
+    <div class="hero-overlay"></div>
+    <div class="hero-content max-w-4xl mx-auto text-center px-6">
+      <h1 class="display-font text-6xl md:text-7xl leading-none mb-6">THE ARCHIVE</h1>
+      <p class="text-xl text-zinc-400 max-w-lg mx-auto">Curated ink from @thankqtattoos</p>
+    </div>
+  </section>
+
+  <div class="max-w-screen-2xl mx-auto px-6 py-16">
+    <div class="flex justify-between items-end mb-10">
+      <div>
+        <h2 class="section-header">Recent Work</h2>
+                    <p class="text-zinc-400">American Traditional • Custom • Small Pieces</p>
+                </div>
+                <a href="#instagram-feed" class="text-sm flex items-center gap-2 hover:text-red-400 transition-colors">
+                    LIVE INSTAGRAM FEED ↓
+                </a>
+            </div>
+
+            <!-- CURATED MASONRY GALLERY (editable via Admin) -->
+            <div id="portfolio-grid" class="portfolio-grid"></div>
+
+            <!-- LIVE INSTAGRAM FEED -->
+            <div id="instagram-feed" class="mt-24">
+                <div class="flex items-center justify-between mb-8">
+                    <div>
+                        <h2 class="section-header">LIVE FROM INSTAGRAM</h2>
+                        <p class="text-zinc-400">@thankqtattoos • Fresh ink straight from the chair</p>
+                    </div>
+                    <a href="https://www.instagram.com/thankqtattoos/" target="_blank" 
+                       class="btn btn-secondary flex items-center gap-2">
+                        OPEN INSTAGRAM
+                        <span class="text-lg">↗</span>
+                    </a>
+                </div>
+                
+                <!-- YOUR ELFSIGHT EMBED -->
+                <!-- Elfsight Instagram Feed | Untitled Instagram Feed -->
+                <script src="https://elfsightcdn.com/platform.js" async></script>
+                <div class="elfsight-app-43a252c9-332e-4d97-aef9-ad467b3055ed" data-elfsight-app-lazy></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-black py-12 border-t border-zinc-900">
+        <div class="max-w-screen-2xl mx-auto px-6 text-center text-sm text-zinc-500">
+            <p>© Thank Q Tattoos — Qwami Tucker • Killeen, Texas</p>
+            <p class="mt-2">
+                <a href="index.html" class="hover:text-white">Home</a> • 
+                <a href="admin.html" class="hover:text-white">Admin</a> • 
+                <a href="https://www.instagram.com/thankqtattoos/" target="_blank" class="hover:text-white">@thankqtattoos</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="js/common.js"></script>
+    <script>
+        // Re-init after load
+        window.addEventListener('load', () => {
+            if (typeof window.ThankQ !== 'undefined') {
+                window.ThankQ.loadDynamicContent();
+            }
+        });
+    </script>
+</body>
+</html>

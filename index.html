@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ThankQTattoo | Qwami Tucker — Killeen Tattoo Artist | American Traditional & Custom Ink</title>
+  <meta name="description" content="Qwami Tucker (@thankqtattoos) — Resident artist at Bangarang Tattooing Company in Killeen, TX. Specializing in American Traditional tattoos and all styles. Text 240-330-9873 for a consultation.">
+  <meta name="keywords" content="tattoo, Killeen tattoo, American Traditional tattoo, Qwami Tucker, ThankQTattoo, thankqtattoos, Bangarang Tattooing, Texas tattoo artist">
+  <meta property="og:title" content="ThankQTattoo | Qwami Tucker — Channeling Magic Through Ink">
+  <meta property="og:description" content="Bold American Traditional tattoos and custom work by Qwami Tucker. Resident at Bangarang Tattooing Company, Killeen TX.">
+  <meta property="og:image" content="https://picsum.photos/id/1011/1200/630">
+  <meta property="og:url" content="https://thankqtattoo.com">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Oswald:wght@500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <!-- Tailwind Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/styles.css">
+  <script>
+    // Tailwind script config
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'display': ['Oswald', 'system-ui', 'sans-serif'],
+            'serif': ['Playfair Display', 'Georgia', 'serif']
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-[#0a0a0c] text-zinc-200 overflow-x-hidden">
+  <!-- NAVBAR -->
+  <nav class="nav fixed top-0 left-0 right-0 z-50">
+    <div class="max-w-7xl mx-auto px-5 md:px-8">
+      <div class="flex items-center justify-between h-20">
+        <a href="index.html" class="flex items-center gap-x-3">
+          <img src="img/Screenshot 2026-06-12 194358_edited.png" alt="ThankQTattoo" class="h-9 w-9 w-9 object-cover rounded-full ring-1 ring-red-900/30">
+          <span class="logo-font text-2xl md:text-3xl tracking-tighter font-bold">ThankQTattoo</span>
+        </a>
+
+        <!-- Desktop Nav -->
+        <div class="hidden md:flex items-center gap-x-9 text-sm font-medium tracking-[0.3px]">
+          <a href="portfolio.html" class="nav-link">Portfolio</a>
+          <a href="about.html" class="nav-link">About</a>
+          <a href="services.html" class="nav-link">Services</a>
+          <a href="contact.html" class="nav-link">Contact</a>
+        </div>
+
+        <div class="hidden md:block">
+          <a href="services.html#book" class="btn btn-primary text-sm px-6 py-2.5">BOOK CONSULTATION</a>
+        </div>
+
+        <!-- Mobile Hamburger -->
+        <button id="mobile-toggle" class="md:hidden p-2 text-white" aria-label="Menu" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="mobile-menu md:hidden border-t border-zinc-800 bg-[#0a0a0c]">
+      <div class="px-5 py-6 flex flex-col gap-y-4 text-lg font-medium">
+        <a href="portfolio.html" class="nav-link">Portfolio</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="services.html" class="nav-link">Services</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+        <div class="pt-3">
+          <a href="services.html#book" class="btn btn-primary w-full justify-center">Book Consultation</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+ <!-- HERO -->
+<header class="hero relative min-h-[100dvh] flex items-center overflow-hidden" 
+        style="background-image: url('./img/Screenshot 2026-06-12 193728_edited.png');">
+    
+    <!-- Canvas - lowered z-index -->
+    <canvas id="ink-canvas" class="absolute inset-0 z-10 pointer-events-none mix-blend-screen"></canvas>
+    
+    <div class="hero-overlay absolute inset-0 z-20"></div>
+    
+    <div class="hero-content relative z-30 pt-14 text-center px-6 max-w-4xl mx-auto">
+      <div class="inline-flex items-center gap-x-2 mb-5 px-4 py-1 rounded-full border border-white/20 bg-white/5 text-xs tracking-[2px] font-medium">
+        KILLEEN, TEXAS — BANGARANG TATTOOING CO.
+      </div>
+      
+      <h1 class="display-font text-white text-6xl md:text-7xl leading-none mb-4">THANK Q<br>TATTOO</h1>
+      
+      <p class="tagline text-xl md:text-2xl" data-content="tagline">Channeling Magic Through Ink | American Traditional & More</p>
+      
+      <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="services.html#book" 
+           class="btn btn-primary text-base px-10 py-4 w-full sm:w-auto">BOOK CONSULTATION</a>
+        <a href="portfolio.html" 
+           class="btn btn-secondary text-base px-10 py-4 w-full sm:w-auto">VIEW MY WORK</a>
+      </div>
+      
+      <div class="mt-10 text-sm tracking-widest text-zinc-400">
+        TEXT <span data-content="phone" class="font-medium text-white">240-330-9873</span> FOR APPOINTMENTS
+      </div>
+    </div>
+
+    <!-- Scroll cue -->
+    <div class="absolute bottom-12 left-1/2 -translate-x-1/2 z-30 hidden md:block">
+      <div class="flex flex-col items-center text-xs tracking-widest opacity-70">
+        SCROLL TO EXPLORE
+        <div class="h-px w-6 bg-white/60 my-2"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- TRUST / QUICK STATS -->
+  <div class="border-b border-zinc-800 bg-[#0a0a0c]">
+    <div class="max-w-7xl mx-auto px-5 md:px-8 py-4 flex flex-wrap items-center justify-center gap-x-10 gap-y-2 text-xs text-zinc-400 tracking-widest">
+      <div>RESIDENT ARTIST @ BANGARANG TATTOOING CO.</div>
+      <div>AMERICAN TRADITIONAL • CUSTOM • ALL STYLES</div>
+      <div>TEXT 240-330-9873</div>
+    </div>
+  </div>
+
+  <!-- RECENT WORK TEASER -->
+  <section class="max-w-7xl mx-auto px-5 md:px-8 pt-16 pb-9">
+    <div class="flex items-end justify-between mb-6">
+      <div>
+        <div class="uppercase tracking-[3px] text-xs text-zinc-500">THE WORK</div>
+        <h2 class="section-header">Recent Ink</h2>
+      </div>
+      <a href="portfolio.html" class="hidden md:inline-flex btn btn-secondary btn-sm">FULL PORTFOLIO →</a>
+    </div>
+
+    <!-- Teaser grid populated by JS -->
+    <div class="portfolio-teaser"></div>
+
+    <div class="mt-6 md:hidden">
+      <a href="portfolio.html" class="btn btn-secondary w-full">VIEW FULL PORTFOLIO</a>
+    </div>
+  </section>
+
+  <!-- ABOUT TEASER -->
+  <section class="bg-[#111113] py-16 border-y border-zinc-800">
+    <div class="max-w-7xl mx-auto px-5 md:px-8 grid md:grid-cols-2 gap-x-14 gap-y-10 items-center">
+      <div>
+        <div class="uppercase tracking-[3px] text-xs text-red-500/70 mb-1.5">THE ARTIST</div>
+        <h2 class="section-header mb-5">Qwami Tucker</h2>
+        
+        <div class="prose prose-invert text-zinc-300 text-[15px] leading-relaxed max-w-prose" data-content="bio">
+          <!-- Populated dynamically from localStorage or defaults -->
+        </div>
+
+        <div class="mt-7 flex flex-wrap gap-3">
+          <a href="about.html" class="btn btn-secondary">FULL BIO &amp; STORY</a>
+          <a href="https://instagram.com/thankqtattoos" target="_blank" class="btn btn-ghost">@thankqtattoos</a>
+        </div>
+      </div>
+
+      <div class="relative">
+        <div class="aspect-[4/3.1] rounded-2xl overflow-hidden border border-zinc-700 shadow-2xl">
+          <img src="img/Screenshot 2026-06-12 193538_edited.png" 
+               alt="Qwami Tucker tattoo artist drawing designs at Bangarang Tattooing Company"
+               class="w-full h-full object-cover">
+        </div>
+        <div class="absolute -bottom-3 -right-3 bg-[#0a0a0c] border border-zinc-700 px-5 py-2.5 text-sm rounded-xl shadow">
+          5+ years tattooing • All styles welcome
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES HIGHLIGHT -->
+  <section class="max-w-7xl mx-auto px-5 md:px-8 py-16">
+    <div class="grid lg:grid-cols-12 gap-x-12 gap-y-12">
+      <div class="lg:col-span-5">
+        <div class="sticky top-24">
+          <div class="text-xs tracking-[3px] uppercase text-zinc-500 mb-1">WHAT I DO</div>
+          <h2 class="section-header">Specialties &amp; Approach</h2>
+          <p class="mt-5 text-lg text-zinc-400">I love tattooing in all styles and forms. My foundation is American Traditional — bold lines, saturated color, and timeless imagery — but I bring the same care and intensity to small work, custom pieces, and challenging cover-ups.</p>
+          
+          <a href="services.html" class="btn btn-primary mt-6 inline-flex">EXPLORE SERVICES &amp; BOOK</a>
+        </div>
+      </div>
+
+      <div class="lg:col-span-7 grid sm:grid-cols-2 gap-4">
+        <div class="card p-6">
+          <div class="font-semibold text-xl mb-2 text-white">American Traditional</div>
+          <p class="text-sm text-zinc-400">Classic bold linework, vibrant palettes, and iconic imagery: roses, daggers, eagles, panthers, anchors, and more. Built to age beautifully.</p>
+        </div>
+        <div class="card p-6">
+          <div class="font-semibold text-xl mb-2 text-white">Small Pieces &amp; Jammers</div>
+          <p class="text-sm text-zinc-400">Compact, high-impact tattoos. Perfect for first pieces, meaningful symbols, or adding to existing collections without huge commitment.</p>
+        </div>
+        <div class="card p-6">
+          <div class="font-semibold text-xl mb-2 text-white">Custom &amp; Illustrative</div>
+          <p class="text-sm text-zinc-400">One-of-a-kind designs created with you. Flash and predrawn options available, or fully custom work from your idea or reference.</p>
+        </div>
+        <div class="card p-6">
+          <div class="font-semibold text-xl mb-2 text-white">Cover-ups &amp; Transformations</div>
+          <p class="text-sm text-zinc-400">Thoughtful cover-ups and rework. I’ll help you turn old ink you no longer connect with into something powerful and intentional.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STRONG CTA / BOOKING TEASER -->
+  <section id="book" class="bg-zinc-950 border-y border-zinc-800 py-14">
+    <div class="max-w-3xl mx-auto px-5 text-center">
+      <div class="uppercase tracking-[3px] text-xs text-red-500/70">LET’S MAKE SOMETHING PERMANENT</div>
+      <h2 class="section-header mt-3 mb-3">Ready to start your next piece?</h2>
+      <p class="text-zinc-400 max-w-md mx-auto">Text <span data-content="phone" class="font-medium text-white">240-330-9873</span> directly or use the form. Consultations are required for all new work.</p>
+      
+      <div class="mt-8 flex flex-col sm:flex-row justify-center gap-4">
+        <a href="services.html#book" class="btn btn-primary px-10 py-3.5 text-base">OPEN BOOKING FORM</a>
+        <a href="contact.html" class="btn btn-secondary px-10 py-3.5 text-base">GET IN TOUCH</a>
+      </div>
+      <div class="text-xs text-zinc-500 mt-6 tracking-wider">CURRENTLY BOOKING 3–5 WEEKS OUT</div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-zinc-800 bg-[#0a0a0c]">
+    <div class="max-w-7xl mx-auto px-5 md:px-8 py-12 grid md:grid-cols-2 gap-y-10 text-sm">
+      <div>
+        <div class="flex items-center gap-x-2 mb-1">
+          <img src="img/Screenshot 2026-06-12 194358_edited.png" alt="ThankQTattoo" class="h-7 w-7 object-contain" />
+          <span class="logo-font text-2xl font-bold tracking-tighter">ThankQTattoo</span>
+        </div>
+        <div class="text-zinc-400">Qwami Tucker — Killeen, Texas</div>
+        <div class="mt-5 text-xs text-zinc-500">© <span id="year"></span> Thank Q Tattoos. All rights reserved.</div>
+      </div>
+      <div class="md:text-right space-y-1 text-zinc-400">
+        <div><a href="https://instagram.com/thankqtattoos" target="_blank" class="hover:text-white">@thankqtattoos</a></div>
+        <div><a href="tel:2403309873" class="hover:text-white" data-content="phone">240-330-9873</a> (text)</div>
+        <div class="pt-1"><a href="admin.html" class="text-zinc-500 hover:text-zinc-300 text-xs tracking-wider">ADMIN LOGIN →</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Global Toast -->
+  <div id="global-toast" class="toast"></div>
+
+  <!-- Scripts -->
+  <script src="js/common.js"></script>
+  <script>
+    // Page-specific: year + slight hero tweaks
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Optional: make hero image slightly different on load or add video note
+    // To use a video background instead of image: replace the header style with video element + overlay.
+  </script>
+
+  <!-- 
+    Google Analytics 4 placeholder — replace G-XXXXXXXXXX with your real ID 
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-XXXXXXXXXX'); </script>
+  -->
+</body>
+</html>

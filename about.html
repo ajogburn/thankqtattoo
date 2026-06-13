@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Qwami Tucker — ThankQTattoo | Killeen Tattoo Artist</title>
+  <meta name="description" content="The story of Qwami Tucker, owner of Thank Q Tattoos and resident artist at Bangarang Tattooing Company in Killeen, Texas.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Oswald:wght@500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/styles.css">
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { 'display': ['Oswald', 'system-ui', 'sans-serif'], 'serif': ['Playfair Display', 'Georgia', 'serif'] } } } };
+  </script>
+</head>
+<body class="bg-[#0a0a0c] text-zinc-200">
+  <!-- NAVBAR -->
+  <nav class="nav fixed top-0 left-0 right-0 z-50">
+    <div class="max-w-7xl mx-auto px-5 md:px-8">
+      <div class="flex items-center justify-between h-20">
+        <a href="index.html" class="flex items-center gap-x-3">
+          <img src="img/Screenshot 2026-06-12 194358_edited.png" alt="ThankQTattoo" class="h-9 w-9 object-contain rounded" />
+          <span class="logo-font text-2xl md:text-3xl tracking-tighter font-bold">ThankQTattoo</span>
+        </a>
+
+        <!-- Desktop Nav -->
+        <div class="hidden md:flex items-center gap-x-9 text-sm font-medium tracking-[0.3px]">
+          <a href="portfolio.html" class="nav-link">Portfolio</a>
+          <a href="about.html" class="nav-link">About</a>
+          <a href="services.html" class="nav-link">Services</a>
+          <a href="contact.html" class="nav-link">Contact</a>
+        </div>
+
+        <div class="hidden md:block">
+          <a href="services.html#book" class="btn btn-primary text-sm px-6 py-2.5">BOOK CONSULTATION</a>
+        </div>
+
+        <!-- Mobile Hamburger -->
+        <button id="mobile-toggle" class="md:hidden p-2 text-white" aria-label="Menu" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="mobile-menu md:hidden border-t border-zinc-800 bg-[#0a0a0c]">
+      <div class="px-5 py-6 flex flex-col gap-y-4 text-lg font-medium">
+        <a href="portfolio.html" class="nav-link">Portfolio</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="services.html" class="nav-link">Services</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+        <div class="pt-3">
+          <a href="services.html#book" class="btn btn-primary w-full justify-center">Book Consultation</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="h-20"></div>
+
+  <!-- HERO / INTRO -->
+  <div class="max-w-5xl mx-auto px-5 md:px-8 pt-10 pb-16">
+    <div class="text-xs uppercase tracking-[3.5px] text-red-500/80 mb-2">MEET THE ARTIST</div>
+    <h1 class="section-header max-w-2xl">Qwami Tucker.<br>Owner of Thank Q Tattoos.</h1>
+    <p class="mt-4 max-w-prose text-xl text-zinc-400">Resident at Bangarang Tattooing Company in Killeen, Texas. Channeling magic through ink.</p>
+  </div>
+
+  <!-- PHOTO + BIO -->
+  <section class="border-y border-zinc-800 bg-zinc-950">
+    <div class="max-w-7xl mx-auto grid md:grid-cols-2">
+      <!-- Photo -->
+      <div class="relative overflow-hidden min-h-[520px] md:min-h-[640px]">
+        <img src="img/Screenshot 2026-06-12 193538_edited.png" 
+             alt="Qwami Tucker tattoo artist at work at Bangarang Tattooing Company" 
+             class="absolute inset-0 w-full h-full object-cover object-left">
+        <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent"></div>
+      </div>
+
+      <!-- Bio -->
+      <div class="px-6 md:px-10 lg:pr-16 py-12 md:py-16 text-lg leading-relaxed">
+        <div class="max-w-prose" data-content="bio">
+          <!-- JS populated -->
+        </div>
+
+        <div class="mt-9 pt-7 border-t border-zinc-800 text-sm grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5 text-zinc-400">
+          <div>
+            <div class="font-semibold text-white mb-1 text-xs tracking-widest">CURRENTLY</div>
+            <div>Resident Artist at <span data-content="shopName"></span></div>
+            <div><span data-content="address"></span></div>
+          </div>
+          <div>
+            <div class="font-semibold text-white mb-1 text-xs tracking-widest">ROOTS</div>
+            <div>San Diego, California → Killeen, Texas</div>
+            <div>5+ years professional tattooing</div>
+          </div>
+        </div>
+
+        <div class="mt-9">
+          <a href="https://instagram.com/thankqtattoos" target="_blank" class="btn btn-secondary">FOLLOW ON INSTAGRAM</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PHILOSOPHY / APPROACH -->
+  <section class="max-w-5xl mx-auto px-5 md:px-8 py-16">
+    <div class="grid md:grid-cols-12 gap-y-8 items-start">
+      <div class="md:col-span-4">
+        <div class="text-xs tracking-[3px] text-red-500/70">THE APPROACH</div>
+        <div class="text-4xl font-semibold tracking-tighter mt-1">Channeling<br>Magic.</div>
+      </div>
+      <div class="md:col-span-8 text-zinc-300 text-[15.2px] leading-relaxed space-y-5">
+        <p>I love tattooing in all styles and forms. My core is rooted in American Traditional — strong lines, rich color, and imagery that carries weight — but I approach every piece with curiosity and respect for the client’s vision.</p>
+        <p>Whether it’s a small meaningful symbol, a full custom backpiece, or breathing new life into an old tattoo through a cover-up, I believe the best work happens when artist and client collaborate with honesty and clear communication.</p>
+        <p>I want you to leave not only with incredible ink, but with an experience that feels personal and intentional.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SHOP / LOCATION -->
+  <section class="bg-[#111113] py-12 border-y border-zinc-800">
+    <div class="max-w-5xl mx-auto px-5 md:px-8">
+      <div class="text-xs uppercase tracking-widest text-zinc-400 mb-2">YOU CAN FIND ME AT</div>
+      <div class="text-3xl md:text-4xl font-semibold tracking-tighter"><span data-content="shopName"></span></div>
+      <div class="mt-2 text-xl text-zinc-400"><span data-content="address"></span></div>
+
+      <div class="mt-7 flex flex-wrap gap-3">
+        <a href="tel:2403309873" class="btn btn-primary" data-content="phone">TEXT 240-330-9873</a>
+        <a href="services.html" class="btn btn-secondary">VIEW BOOKING POLICIES</a>
+      </div>
+
+      <div class="mt-5 text-xs text-zinc-500">Shop phone: <span data-content="shopPhone"></span></div>
+    </div>
+  </section>
+
+  <footer class="border-t border-zinc-800 py-8 text-sm">
+    <div class="max-w-7xl mx-auto px-5 md:px-8 flex flex-col md:flex-row gap-y-1 justify-between text-zinc-400">
+      <div>© <span id="year"></span> Thank Q Tattoos</div>
+      <div><a href="index.html" class="hover:text-white">Back to Home</a> • <a href="portfolio.html">View Portfolio</a></div>
+    </div>
+  </footer>
+
+  <script src="js/common.js"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
