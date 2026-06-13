@@ -644,56 +644,22 @@ a, button {
 }
 
 /* ============================================
-   CUSTOM INSTAGRAM-STYLE PROFILE WIDGET
-   Matches the dark edgy aesthetic + blood red accents
+   INSTAGRAM PROFILE + FEED WIDGET
+   Matches the dark edgy tattoo aesthetic + blood red accents
    ============================================ */
 .ig-profile-header {
   border-bottom: 1px solid #27272a;
   padding-bottom: 1.25rem;
 }
 
-#ig-posts-grid .ig-post {
-  position: relative;
+/* Container for the live Elfsight Instagram feed */
+.ig-wall-container {
+  min-height: 420px;
+  background: #111113;
+}
+
+/* Elfsight widget tweaks (styling power is limited — customize in Elfsight dashboard for best results) */
+.elfsight-app-43a252c9-332e-4d97-aef9-ad467b3055ed {
+  border-radius: 10px;
   overflow: hidden;
-  aspect-ratio: 1 / 1;
-  background: #161618;
-  border-radius: 6px;
-  cursor: zoom-in;
-}
-
-#ig-posts-grid .ig-post img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-#ig-posts-grid .ig-post:hover img {
-  transform: scale(1.08);
-}
-
-#ig-posts-grid .ig-post .ig-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.15) 45%, transparent 65%);
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  display: flex;
-  align-items: flex-end;
-  padding: 10px;
-  color: white;
-  font-size: 0.75rem;
-  line-height: 1.2;
-}
-
-#ig-posts-grid .ig-post:hover .ig-overlay {
-  opacity: 1;
-}
-
-#ig-posts-grid .ig-post .ig-overlay .caption {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
 }

@@ -51,10 +51,31 @@ Then visit http://localhost:8000
 
 ## Instagram Integration (Live Feed)
 
-The site supports **two modes** on Portfolio and Home teaser:
+The site now has a beautiful **custom-built Instagram profile widget** (no third-party services required).
 
-1. **Curated / Manual** (default + fully editable via Admin)
-2. **Live Instagram** (auto-updates from @thankqtattoos)
+It supports **two modes**:
+
+1. **Curated / Manual** (default) — pulls the latest pieces from your Supabase `portfolio` table (managed in the Admin dashboard).
+2. **Live Instagram** (recommended for "new posts from Instagram") — automatically shows real recent posts from @thankqtattoos.
+
+### How to enable true live Instagram updates (current: Elfsight)
+1. Go to https://elfsight.com/instagram-feed-widget/ (free tier available)
+2. Create or edit your Instagram Feed widget for `@thankqtattoos`
+3. Customize it heavily:
+   - Choose Dark theme
+   - Set background to #111113 or #0a0a0c
+   - Use blood red (#9f1f24) for accents
+   - Pick Masonry or Grid layout
+   - Show captions, likes, comments as desired
+   - Set number of posts to display
+4. Copy the embed code (the `<script>` + `<div class="elfsight-app-...">`)
+5. In `portfolio.html`, replace the Elfsight embed block (search for `elfsight-app-43a252c9-332e-4d97-aef9-ad467b3055ed`)
+6. Paste your new code
+7. Save and deploy
+
+The feed will automatically show your latest Instagram posts. The custom profile header above it (avatar, stats, bio) is styled to match the site and stays in place.
+
+For the best visual match, always customize the widget colors/layout inside the Elfsight dashboard rather than trying to override via CSS (the widget is largely self-contained).
 
 ### Recommended: Elfsight Instagram Feed (easiest, beautiful, free tier available)
 

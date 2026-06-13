@@ -69,19 +69,31 @@
 
   <div class="h-20"></div>
 
-  <!-- HEADER -->
-  <div class="max-w-7xl mx-auto px-5 md:px-8 pt-10 pb-8">
-    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-y-3">
-      <div>
-        <div class="uppercase tracking-[3px] text-xs text-red-500/70 mb-1">THE ARCHIVE</div>
-        <h1 class="section-header tracking-tighter">Portfolio</h1>
+  <!-- BIG HERO SECTION (restored like index) -->
+  <header class="hero relative min-h-[65vh] md:min-h-[70vh] flex items-center overflow-hidden" 
+          style="background-image: url('img/Screenshot\ 2026-06-12\ 193538_edited.png');">
+    
+    <canvas id="ink-canvas" class="absolute inset-0 z-10 pointer-events-none mix-blend-screen"></canvas>
+    
+    <div class="hero-overlay absolute inset-0 z-20"></div>
+    
+    <div class="hero-content relative z-30 pt-14 text-center px-6 max-w-4xl mx-auto">
+      <div class="inline-flex items-center gap-x-2 mb-5 px-4 py-1 rounded-full border border-white/20 bg-white/5 text-xs tracking-[2px] font-medium">
+        THE ARCHIVE
       </div>
-      <div class="text-zinc-400 text-lg">Curated work by Qwami Tucker • Live from Supabase</div>
+      
+      <h1 class="display-font text-white text-6xl md:text-7xl leading-none mb-4 tracking-tighter">PORTFOLIO</h1>
+      
+      <p class="tagline text-xl md:text-2xl">Curated work by Qwami Tucker • Live from Supabase</p>
+      
+      <div class="mt-10 text-sm tracking-widest text-zinc-400">
+        SCROLL TO EXPLORE THE WORK
+      </div>
     </div>
-  </div>
+  </header>
 
   <!-- FILTERS -->
-  <div class="max-w-7xl mx-auto px-5 md:px-8 pb-6">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 pt-12 pb-6">
     <div class="flex items-center justify-between mb-2">
       <div class="text-xs uppercase tracking-[2px] text-zinc-500">FILTER BY STYLE</div>
       <button onclick="refreshPortfolioFilters()" class="text-[11px] px-3 py-1 rounded-full border border-zinc-800 hover:bg-zinc-900 text-zinc-400">↻ Refresh filters</button>
@@ -108,14 +120,13 @@
   </div>
 
   <!-- ===================================================== -->
-  <!-- CUSTOM BUILT INSTAGRAM PROFILE + RECENT POSTS WIDGET  -->
-  <!-- Self-contained, no external scripts. Always up to date  -->
-  <!-- with your Supabase portfolio uploads. Looks & feels     -->
-  <!-- like a real Instagram profile page.                     -->
+  <!-- INSTAGRAM PROFILE + LIVE FEED                         -->
+  <!-- Custom profile header (matches site aesthetic) +      -->
+  <!-- Live Instagram Feed powered by Elfsight (auto-updates) -->
   <!-- ===================================================== -->
   <div class="max-w-7xl mx-auto px-5 md:px-8 pb-20">
     <div id="instagram-widget" class="max-w-4xl mx-auto">
-      <!-- IG Profile Header -->
+      <!-- IG Profile Header (custom styled to match ThankQTattoo) -->
       <div class="ig-profile-header flex flex-col sm:flex-row items-center sm:items-start gap-6 sm:gap-8 mb-8 px-2">
         <!-- Avatar -->
         <div class="flex-shrink-0">
@@ -149,7 +160,7 @@
 
           <!-- Stats row -->
           <div class="flex justify-center sm:justify-start gap-6 text-sm mb-3">
-            <div><span id="ig-posts-count" class="font-semibold">342</span> <span class="text-zinc-400">posts</span></div>
+            <div><span class="font-semibold">342</span> <span class="text-zinc-400">posts</span></div>
             <div><span class="font-semibold">48.7k</span> <span class="text-zinc-400">followers</span></div>
             <div><span class="font-semibold">312</span> <span class="text-zinc-400">following</span></div>
           </div>
@@ -164,19 +175,21 @@
         </div>
       </div>
 
-      <!-- Recent Posts Grid (IG style - square thumbnails) -->
+      <!-- Live Instagram Feed -->
       <div class="mb-2 px-1 flex items-center justify-between text-xs uppercase tracking-[2px] text-zinc-500">
-        <div>Recent Posts</div>
+        <div>Recent Posts • Live from Instagram</div>
         <a href="https://instagram.com/thankqtattoos" target="_blank" class="hover:text-red-400 transition">View all on Instagram →</a>
       </div>
 
-      <div id="ig-posts-grid" 
-           class="grid grid-cols-3 gap-1 sm:gap-1.5 md:gap-2 bg-[#111113] p-1.5 rounded-2xl border border-zinc-800">
-        <!-- Populated dynamically by JS from Supabase (latest portfolio pieces) -->
+      <!-- Elfsight Instagram Feed Embed (live & auto-updating) -->
+      <div class="ig-wall-container bg-[#111113] border border-zinc-800 rounded-2xl overflow-hidden">
+        <!-- Elfsight Instagram Feed | Untitled Instagram Feed -->
+        <script src="https://elfsightcdn.com/platform.js" async></script>
+        <div class="elfsight-app-43a252c9-332e-4d97-aef9-ad467b3055ed" data-elfsight-app-lazy></div>
       </div>
 
       <div class="text-center mt-4 text-[11px] text-zinc-500">
-        Showing the most recent work • Pulls live from the same archive as the gallery above
+        Live feed from Instagram • Customize colors, layout &amp; number of posts in your Elfsight dashboard (use dark theme + blood red accents for best match)
       </div>
     </div>
   </div>
@@ -318,79 +331,9 @@
       window.ThankQ && window.ThankQ.showToast && window.ThankQ.showToast('Filters refreshed from Supabase');
     }
 
-    // =====================================================
-    // CUSTOM INSTAGRAM-STYLE PROFILE + RECENT POSTS WIDGET
-    // Pulls latest pieces from Supabase so it stays fresh
-    // when new work is uploaded via the admin dashboard.
-    // =====================================================
-    async function initInstagramProfileWidget() {
-      const grid = document.getElementById('ig-posts-grid');
-      if (!grid) return;
-
-      grid.innerHTML = `<div class="col-span-3 py-8 text-center text-xs text-zinc-500">Loading recent posts...</div>`;
-
-      try {
-        const items = await window.ThankQSupabase.getPortfolio();
-        const total = items ? items.length : 0;
-
-        // Update the "posts" count in the profile header to match actual data
-        const countEl = document.getElementById('ig-posts-count');
-        if (countEl) countEl.textContent = total || '342';
-
-        // Show 15 posts = 5 rows in the 3-column grid — looks full and even with multiple rows visible
-        // Change the number below if you want more/less (e.g. 12 for 4 rows, 18 for 6 rows)
-        const recent = (items || []).slice(0, 15);
-
-        // Want completely custom images that aren't in your main portfolio?
-        // Replace the block above with a static array like this:
-        // const recent = [
-        //   { url: 'https://...your-image.jpg', caption: 'Bold traditional eagle on the forearm' },
-        //   ...
-        // ];
-
-        grid.innerHTML = '';
-
-        if (!recent.length) {
-          grid.innerHTML = `
-            <div class="col-span-3 py-8 text-center text-sm text-zinc-400">
-              No work uploaded yet. Add pieces in the Admin dashboard.
-            </div>`;
-          return;
-        }
-
-        recent.forEach((item, index) => {
-          const postEl = document.createElement('div');
-          postEl.className = 'ig-post group';
-          postEl.innerHTML = `
-            <img src="${item.url}" 
-                 alt="${item.caption || 'Tattoo by Qwami Tucker'}" 
-                 loading="lazy">
-            <div class="ig-overlay">
-              <div class="flex items-center gap-2 text-[10px] font-medium">
-                <span>♥</span>
-                <span class="opacity-90">${Math.floor(Math.random() * 1800) + 420}</span>
-              </div>
-              <div class="caption mt-0.5">${item.caption || ''}</div>
-            </div>
-          `;
-
-          // Click opens the main lightbox (nice full experience)
-          // We pass only the recent items so the carousel feels focused
-          postEl.addEventListener('click', () => {
-            openLightbox(recent, index);
-          });
-
-          grid.appendChild(postEl);
-        });
-      } catch (err) {
-        console.error('Instagram widget load error', err);
-        grid.innerHTML = `
-          <div class="col-span-3 py-6 text-center text-sm text-red-400/80">
-            Could not load recent posts.<br>
-            <a href="https://instagram.com/thankqtattoos" target="_blank" class="underline hover:text-red-400">Follow on Instagram instead →</a>
-          </div>`;
-      }
-    }
+    // Instagram live feed is now powered by the official RSS.app Wall embed (see the HTML section below for the <rssapp-wall> code).
+    // The custom JS fetch logic has been replaced by their widget for a richer, automatically updating Instagram experience.
+    // To change the feed, update the id on the <rssapp-wall> tag or re-generate the embed from rss.app dashboard.
 
     function applyFilter() {
       const grid = document.getElementById('portfolio-grid');
@@ -450,8 +393,7 @@
       // Load gallery
       await loadPortfolio();
 
-      // Custom Instagram profile-style widget (pulls latest from Supabase)
-      await initInstagramProfileWidget();
+      // Instagram live wall is now embedded directly via RSS.app (see HTML section below)
 
       // Mobile nav (from common.js or fallback)
       const toggle = document.getElementById('mobile-toggle');
