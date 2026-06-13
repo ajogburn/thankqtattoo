@@ -12,7 +12,7 @@ const DEFAULT_CONTENT = {
   address: "2212 Sunny Lane, Killeen, TX 76541",
   shopName: "Bangarang Tattooing Company",
   email: "text or DM for fastest response",
-  availability: "Currently booking 3–5 weeks out. Text 240-330-9873 to begin a consultation."
+  availability: "Qwami books several weeks out. Best to attend the shop’s monthly Consultation Day (1st Wednesday) or text 240-330-9873 directly."
 };
 
 const DEFAULT_PORTFOLIO = [
