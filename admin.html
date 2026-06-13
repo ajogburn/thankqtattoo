@@ -129,6 +129,7 @@
       <button onclick="switchTab('portfolio')" id="tab-portfolio" class="admin-tab active whitespace-nowrap">Portfolio</button>
       <button onclick="switchTab('content')" id="tab-content" class="admin-tab whitespace-nowrap">Site Content</button>
       <button onclick="switchTab('submissions')" id="tab-submissions" class="admin-tab whitespace-nowrap">Form Submissions</button>
+      <button onclick="switchTab('tags')" id="tab-tags" class="admin-tab font-medium">Filters & Tags</button>
     </div>
 
     <!-- ========== PORTFOLIO TAB ========== -->
@@ -722,6 +723,18 @@
       renderSubmissionsList();
       updateStats();
     }
+
+    <!-- TAGS / FILTERS TAB -->
+<div id="panel-tags" class="tab-panel hidden">
+  <div class="py-4">
+    <div class="text-sm font-medium mb-4">Manage Portfolio Filter Tags</div>
+    <div class="flex gap-3 mb-6">
+      <input id="new-tag-input" type="text" class="form-input flex-1" placeholder="New tag name (e.g. Neo Traditional)">
+      <button onclick="addNewTag()" class="btn btn-primary">Add Tag</button>
+    </div>
+    <div id="tags-list" class="space-y-2"></div>
+  </div>
+</div>
 
     // Boot everything
     window.onload = bootAdmin;
