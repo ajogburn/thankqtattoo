@@ -118,9 +118,12 @@
 
     <!-- PORTFOLIO TAB -->
     <div id="panel-portfolio" class="tab-panel">
-      <div class="flex items-center justify-between py-4">
+      <div class="flex items-center justify-between py-4 gap-3 flex-wrap">
         <div class="text-sm font-medium">Manage Portfolio Images &amp; Metadata</div>
-        <button onclick="showAddImageModal()" class="btn btn-primary btn-sm">+ ADD NEW IMAGE</button>
+        <div class="flex gap-2">
+          <button onclick="seedLocalImages()" class="btn btn-secondary btn-sm">+ ADD ALL LOCAL /img PHOTOS</button>
+          <button onclick="showAddImageModal()" class="btn btn-primary btn-sm">+ ADD NEW IMAGE (UPLOAD)</button>
+        </div>
       </div>
 
       <div id="admin-portfolio-list" class="space-y-2"></div>
@@ -385,47 +388,69 @@
       const date = document.getElementById('image-date').value.trim();
       const editId = document.getElementById('edit-id').value;
 
-      let items = ThankQ.loadFromStorage('thankq_portfolio', ThankQ.DEFAULT_PORTFOLIO);
+      try {
+        let items = ThankQ.loadFromStorage('thankq_portfolio', ThankQ.DEFAULT_PORTFOLIO);
 
-      if (editId) {
-        // Editing existing
-        const itemIndex = items.findIndex(i => i.id == editId);
-        if (itemIndex > -1) {
-          items[itemIndex].caption = caption;
-          items[itemIndex].style = style;
-          items[itemIndex].date = date;
+        if (editId) {
+          // Editing existing
+          const itemIndex = items.findIndex(i => i.id == editId);
+          if (itemIndex > -1) {
+            items[itemIndex].caption = caption;
+            items[itemIndex].style = style;
+            items[itemIndex].date = date;
 
-          // If user selected a new file, replace the image
-          if (fileInput.files && fileInput.files[0]) {
-            const dataUrl = await fileToDataURL(fileInput.files[0]);
-            items[itemIndex].url = dataUrl;
+            // If user selected a new file, replace the image
+            if (fileInput.files && fileInput.files[0]) {
+              const dataUrl = await fileToDataURL(fileInput.files[0]);
+              items[itemIndex].url = dataUrl;
+            }
           }
-        }
-      } else {
-        // New image
-        if (!fileInput.files || !fileInput.files[0]) {
-          alert('Please select an image file.');
-          return;
-        }
-        const dataUrl = await fileToDataURL(fileInput.files[0]);
-        const newId = Math.max(0, ...items.map(i => i.id)) + 1 || Date.now();
+        } else {
+          // New image
+          if (!fileInput.files || !fileInput.files[0]) {
+            alert('Please select an image file.');
+            return;
+          }
 
-        items.unshift({
-          id: newId,
-          url: dataUrl,
-          caption,
-          style,
-          date: date || new Date().toISOString().slice(0,7)
-        });
+          // Size warning for large screenshots / photos
+          const file = fileInput.files[0];
+          if (file.size > 1.8 * 1024 * 1024) {
+            const proceed = confirm(
+              `This file is ${(file.size / 1024 / 1024).toFixed(1)} MB. ` +
+              `Large images get converted to base64 and can fill up browser storage. ` +
+              `Consider cropping or resizing the photo first. Continue anyway?`
+            );
+            if (!proceed) return;
+          }
+
+          const dataUrl = await fileToDataURL(file);
+          const maxId = items.length > 0 ? Math.max(...items.map(i => i.id || 0)) : 0;
+          const newId = maxId + 1 || Date.now();
+
+          items.unshift({
+            id: newId,
+            url: dataUrl,
+            caption,
+            style,
+            date: date || new Date().toISOString().slice(0,7)
+          });
+        }
+
+        ThankQ.saveToStorage('thankq_portfolio', items);
+        localStorage.setItem('thankq_last_updated', new Date().toISOString());
+
+        hideImageModal();
+        renderPortfolioAdminList();
+        updateStats();
+        ThankQ.showToast('Portfolio updated. Refresh public pages to see changes.');
+      } catch (err) {
+        console.error('Portfolio save error:', err);
+        if (err.name === 'QuotaExceededError' || String(err).toLowerCase().includes('quota')) {
+          alert('Browser storage is full (common with large images).\n\nTips:\n• Use smaller/c ropped photos (under 1MB ideal)\n• Delete some older pieces first\n• Or use the "RESET ALL DATA" button in Settings and re-add');
+        } else {
+          alert('Could not save the image. ' + (err.message || 'Unknown error. Check the browser console.'));
+        }
       }
-
-      ThankQ.saveToStorage('thankq_portfolio', items);
-      localStorage.setItem('thankq_last_updated', new Date().toISOString());
-
-      hideImageModal();
-      renderPortfolioAdminList();
-      updateStats();
-      ThankQ.showToast('Portfolio updated. Refresh public pages to see changes.');
     }
 
     function fileToDataURL(file) {
@@ -444,6 +469,50 @@
       ThankQ.saveToStorage('thankq_portfolio', items);
       renderPortfolioAdminList();
       updateStats();
+    }
+
+    // One-click helper: merge all the real tattoo photos from the local /img folder into the portfolio
+    function seedLocalImages() {
+      if (!confirm('This will add (or update) the tattoo photos from your /img folder into the managed portfolio. Continue?')) {
+        return;
+      }
+
+      let stored = ThankQ.loadFromStorage('thankq_portfolio', []);
+      const defaults = ThankQ.DEFAULT_PORTFOLIO || [];
+
+      // Only take items that point to local img/ paths (the real photos)
+      const localOnes = defaults.filter(d => d.url && d.url.startsWith('img/'));
+
+      let added = 0;
+      localOnes.forEach(localItem => {
+        const existingIndex = stored.findIndex(s => s.url === localItem.url);
+        if (existingIndex === -1) {
+          // Add new
+          const maxId = stored.length > 0 ? Math.max(...stored.map(s => s.id || 0)) : 0;
+          stored.unshift({
+            id: maxId + 1,
+            url: localItem.url,
+            caption: localItem.caption || 'Tattoo by Qwami Tucker',
+            style: localItem.style || 'American Traditional',
+            date: localItem.date || new Date().toISOString().slice(0,7)
+          });
+          added++;
+        } else {
+          // Optionally refresh caption/style if they are still the generic ones
+          if (!stored[existingIndex].caption || stored[existingIndex].caption.includes('Tattoo by')) {
+            stored[existingIndex].caption = localItem.caption;
+            stored[existingIndex].style = localItem.style;
+            stored[existingIndex].date = localItem.date;
+          }
+        }
+      });
+
+      ThankQ.saveToStorage('thankq_portfolio', stored);
+      localStorage.setItem('thankq_last_updated', new Date().toISOString());
+
+      renderPortfolioAdminList();
+      updateStats();
+      ThankQ.showToast(added > 0 ? `Added ${added} local photos to portfolio.` : 'Local photos are already in the portfolio.');
     }
 
     // ===== CONTENT =====

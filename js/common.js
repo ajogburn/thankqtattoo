@@ -17,17 +17,17 @@ const DEFAULT_CONTENT = {
 
 const DEFAULT_PORTFOLIO = [
   { id: 1, url: "img/Screenshot 2026-06-12 193538_edited.png", caption: "Artist at work — flash studies & custom prep", style: "Studio", date: "2025-05" },
-  { id: 2, url: "https://picsum.photos/id/1011/800/900", caption: "Classic American Traditional Panther", style: "American Traditional", date: "2025-04" },
-  { id: 3, url: "https://picsum.photos/id/1005/800/820", caption: "Bold dagger & rose composition", style: "American Traditional", date: "2025-03" },
-  { id: 4, url: "https://picsum.photos/id/106/800/780", caption: "Small scale traditional heart & banner", style: "Small Pieces", date: "2025-02" },
-  { id: 5, url: "https://picsum.photos/id/160/800/850", caption: "Custom illustrative eagle cover-up foundation", style: "Custom", date: "2024-12" },
-  { id: 6, url: "https://picsum.photos/id/201/800/830", caption: "Traditional swallow pair on forearm", style: "American Traditional", date: "2025-01" },
-  { id: 7, url: "https://picsum.photos/id/251/800/810", caption: "Minimal blackwork script + ornament", style: "Small Pieces", date: "2024-11" },
-  { id: 8, url: "https://picsum.photos/id/29/800/870", caption: "Large scale traditional backpiece in progress", style: "American Traditional", date: "2025-04" },
-  { id: 9, url: "https://picsum.photos/id/133/800/800", caption: "Custom neo-traditional floral & skull", style: "Custom", date: "2025-03" },
-  { id: 10, url: "https://picsum.photos/id/180/800/860", caption: "Fine line traditional anchor on wrist", style: "Small Pieces", date: "2025-02" },
-  { id: 11, url: "https://picsum.photos/id/312/800/820", caption: "Cover-up transformation — old tribal to bold traditional", style: "Coverups", date: "2024-10" },
-  { id: 12, url: "https://picsum.photos/id/48/800/790", caption: "Predrawn flash — snake & dagger set", style: "American Traditional", date: "2025-05" }
+  { id: 2, url: "img/Screenshot 2026-06-12 194358_edited.png", caption: "Bold traditional wolf head", style: "American Traditional", date: "2025-06" },
+  { id: 3, url: "img/AdobeExpressPhotos_d667f19b15d94b2f9431405b23e604ec_CopyEdited.png", caption: "Red geometric cross design", style: "Custom", date: "2025-06" },
+  { id: 4, url: "img/Screenshot 2026-06-12 201403_edited.png", caption: "Screaming gorilla with crown of thorns", style: "Custom", date: "2025-06" },
+  { id: 5, url: "img/Screenshot 2026-06-12 201339_edited.png", caption: "Peony and monarch butterfly composition", style: "American Traditional", date: "2025-06" },
+  { id: 6, url: "img/Screenshot 2026-06-12 201626_edited.png", caption: "Centipede with spider lilies", style: "Custom", date: "2025-06" },
+  { id: 7, url: "img/Screenshot 2026-06-12 201642_edited.png", caption: "Veni Vidi Vici Roman helmet", style: "Custom", date: "2025-06" },
+  { id: 8, url: "img/Screenshot 2026-06-12 201715_edited.png", caption: "American Traditional lady head with rose", style: "American Traditional", date: "2025-06" },
+  { id: 9, url: "img/Screenshot 2026-06-12 201741_edited.png", caption: "Skull and arrow with flowers", style: "American Traditional", date: "2025-06" },
+  { id: 10, url: "img/Screenshot 2026-06-12 194110_edited.png", caption: "Tattooing in progress at the station", style: "Studio", date: "2025-06" },
+  { id: 11, url: "img/Screenshot 2026-06-12 193751_edited.png", caption: "Custom design sketching on tablet", style: "Studio", date: "2025-05" },
+  { id: 12, url: "img/Screenshot 2026-06-12 194155_edited.png", caption: "Working on a large back piece", style: "Studio", date: "2025-06" }
 ];
 
 const STYLES = ["All", "American Traditional", "Small Pieces", "Custom", "Coverups", "Studio"];
