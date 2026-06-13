@@ -127,9 +127,9 @@
     <!-- TABS -->
     <div class="flex border-b border-zinc-800 mb-1 text-sm overflow-x-auto">
       <button onclick="switchTab('portfolio')" id="tab-portfolio" class="admin-tab active whitespace-nowrap">Portfolio</button>
+      <button onclick="switchTab('tags')" id="tab-tags" class="admin-tab whitespace-nowrap">Filters &amp; Tags</button>
       <button onclick="switchTab('content')" id="tab-content" class="admin-tab whitespace-nowrap">Site Content</button>
       <button onclick="switchTab('submissions')" id="tab-submissions" class="admin-tab whitespace-nowrap">Form Submissions</button>
-      <button onclick="switchTab('tags')" id="tab-tags" class="admin-tab font-medium">Filters & Tags</button>
     </div>
 
     <!-- ========== PORTFOLIO TAB ========== -->
@@ -144,6 +144,39 @@
 
       <!-- Portfolio list (live from Supabase) -->
       <div id="admin-portfolio-list" class="space-y-2"></div>
+    </div>
+
+    <!-- ========== FILTERS & TAGS TAB ========== -->
+    <div id="panel-tags" class="tab-panel hidden">
+      <div class="py-5">
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-y-2 mb-5">
+          <div>
+            <div class="font-semibold text-xl tracking-tight">Filters &amp; Tags</div>
+            <div class="text-xs text-zinc-500 mt-0.5 max-w-prose">Manage the styles that power public portfolio filters and the upload dropdown. New tags appear instantly when you open the upload modal or refresh the public portfolio page. Existing tattoos keep their style text even if you delete the tag.</div>
+          </div>
+          <button onclick="refreshTagsList()" class="btn btn-ghost btn-sm self-start md:self-auto">↻ REFRESH TAGS</button>
+        </div>
+
+        <!-- Add new tag -->
+        <div class="card p-5 mb-6">
+          <div class="text-xs uppercase tracking-[1.5px] text-zinc-400 mb-2">CREATE NEW TAG</div>
+          <div class="flex flex-col sm:flex-row gap-3">
+            <input id="new-tag-name" type="text" class="form-input flex-1" placeholder="e.g. Japanese Traditional, Blackwork, Realism, Fine Line..." />
+            <button onclick="addNewTag()" class="btn btn-primary whitespace-nowrap px-8">+ ADD TAG</button>
+          </div>
+          <div class="text-[11px] text-zinc-500 mt-3">Tags are saved to the <code>portfolio_tags</code> table and become live filter options everywhere.</div>
+        </div>
+
+        <!-- Current tags -->
+        <div class="mb-2 flex items-center justify-between">
+          <div class="text-xs uppercase tracking-[1.5px] text-zinc-400">CURRENT TAGS</div>
+          <div id="tags-count" class="text-xs text-zinc-500"></div>
+        </div>
+        <div id="tags-list" class="space-y-2"></div>
+        <div class="text-[11px] mt-4 text-zinc-500 border border-zinc-800 bg-[#111113] rounded-xl p-3">
+          Tip: Deleting a tag only removes it from the filter list. Any portfolio pieces that already use that style text in the <strong>style</strong> column will continue to display and filter correctly using the stored value.
+        </div>
+      </div>
     </div>
 
     <!-- ========== CONTENT TAB ========== -->
@@ -202,30 +235,6 @@
       </div>
       <div id="admin-submissions-list" class="space-y-3"></div>
       <div class="text-[11px] text-zinc-500 mt-6">These are the consultation &amp; contact requests from the public site. For production, consider connecting a backend email service (Resend, Formspree, etc).</div>
-    </div>
-
-    <!-- ========== TAGS / FILTERS TAB ========== -->
-    <div id="panel-tags" class="tab-panel hidden">
-      <div class="py-4">
-        <div class="flex items-center justify-between mb-4">
-          <div>
-            <div class="font-semibold">Portfolio Filter Tags</div>
-            <div class="text-xs text-zinc-500">These appear as filters on the portfolio page and in the upload dropdown.</div>
-          </div>
-        </div>
-
-        <!-- Add new -->
-        <div class="flex gap-3 mb-6">
-          <input id="new-tag-input" type="text" class="form-input flex-1" placeholder="New tag name (e.g. Neo Traditional)">
-          <button onclick="addNewTag()" class="btn btn-primary">Add Tag</button>
-        </div>
-
-        <div id="tags-list" class="space-y-2"></div>
-
-        <div class="mt-6 text-[11px] text-zinc-500">
-          Tip: Deleting a tag does <strong>not</strong> change existing portfolio pieces that use it.
-        </div>
-      </div>
     </div>
 
   </div>
@@ -393,9 +402,8 @@
       const btn = document.getElementById('tab-' + tab);
       if (btn) btn.classList.add('active');
 
-      // Lazy load content for the tags tab
       if (tab === 'tags') {
-        renderTagsList();
+        refreshTagsList();
       }
     }
 
@@ -408,9 +416,6 @@
       updateStats();
       // Default to portfolio
       switchTab('portfolio');
-
-      // Preload tags (used by upload form and public site filters)
-      try { await window.ThankQSupabase.getTags(); } catch (_) {}
     }
 
     function updateStats() {
@@ -423,8 +428,11 @@
     }
 
     async function refreshAll() {
-      await refreshPortfolioList();
-      await loadContentForm();
+      await Promise.all([
+        refreshPortfolioList(),
+        loadContentForm(),
+        refreshTagsList().catch(() => {})
+      ]);
       updateStats();
       window.ThankQ.showToast('Refreshed from Supabase');
     }
@@ -507,10 +515,26 @@
       document.getElementById('upload-progress-wrap').classList.add('hidden');
       document.getElementById('edit-id').value = '';
 
-      // Populate style dropdown from live tags (Supabase)
+      // Populate style dropdown LIVE from portfolio_tags (new tags appear immediately)
       const styleSelect = document.getElementById('upload-style');
-      const currentVal = existing ? (existing.style || 'Custom') : '';
-      await populateStyleSelect(styleSelect, currentVal);
+      styleSelect.innerHTML = '<option value="">Select a style...</option>';
+      try {
+        const tags = await window.ThankQSupabase.getTags();
+        tags.forEach(t => {
+          const opt = document.createElement('option');
+          opt.value = t.name;
+          opt.textContent = t.name;
+          styleSelect.appendChild(opt);
+        });
+      } catch (e) {
+        // graceful fallback
+        ['American Traditional', 'Small Pieces', 'Custom', 'Coverups', 'Flash', 'Other'].forEach(s => {
+          const opt = document.createElement('option');
+          opt.value = s;
+          opt.textContent = s;
+          styleSelect.appendChild(opt);
+        });
+      }
 
       if (existing) {
         isEditing = true;
@@ -518,12 +542,21 @@
         subtitle.textContent = 'Update caption, style, or date. To replace the image file, delete + re-upload.';
         document.getElementById('edit-id').value = existing.id;
         document.getElementById('upload-caption').value = existing.caption || '';
-        document.getElementById('upload-style').value = existing.style || 'Custom';
         document.getElementById('upload-date').value = existing.date || '';
         // Hide file input in edit mode (image replace = delete & re-upload)
         document.getElementById('file-section').classList.add('hidden');
         fileInput.required = false;
         submitBtn.textContent = 'SAVE CHANGES';
+
+        // Ensure the existing style value is selectable even if its tag was deleted later
+        const currentStyle = existing.style || '';
+        if (currentStyle && !Array.from(styleSelect.options).some(o => o.value === currentStyle)) {
+          const preserve = document.createElement('option');
+          preserve.value = currentStyle;
+          preserve.textContent = currentStyle + ' (current)';
+          styleSelect.appendChild(preserve);
+        }
+        if (currentStyle) styleSelect.value = currentStyle;
       } else {
         isEditing = false;
         title.textContent = 'Upload New Piece';
@@ -632,6 +665,127 @@
       } catch (err) {
         const msg = (err && err.message) ? err.message : String(err);
         alert('Delete failed.\n\n' + msg + '\n\nTip: Make sure your portfolio table uses a proper id column (uuid or bigint) and RLS allows deletes for authenticated users. See SUPABASE-SETUP.md.');
+      }
+    }
+
+    // ==================== FILTERS & TAGS MANAGEMENT (portfolio_tags) ====================
+    let tagsCache = [];
+
+    async function refreshTagsList() {
+      const container = document.getElementById('tags-list');
+      const countEl = document.getElementById('tags-count');
+      if (!container) return;
+
+      container.innerHTML = `<div class="text-xs text-zinc-500 px-1 py-3">Loading tags from Supabase...</div>`;
+
+      try {
+        const tags = await window.ThankQSupabase.getTags();
+        tagsCache = tags || [];
+
+        container.innerHTML = '';
+        if (countEl) countEl.textContent = `${tagsCache.length} tag${tagsCache.length === 1 ? '' : 's'}`;
+
+        if (!tagsCache.length) {
+          container.innerHTML = `
+            <div class="text-center py-8 border border-dashed border-zinc-800 rounded-2xl text-sm text-zinc-400">
+              No tags yet. Add your first style tag above (e.g. "American Traditional").
+            </div>`;
+          return;
+        }
+
+        tagsCache.forEach(tag => {
+          const row = document.createElement('div');
+          row.className = 'admin-row flex items-center gap-4 bg-[#161618] border border-zinc-800 rounded-2xl px-4 py-3';
+
+          row.innerHTML = `
+            <div class="flex-1 min-w-0">
+              <div class="font-medium text-lg tracking-tight">${escapeHtml(tag.name)}</div>
+              <div class="text-[10px] text-zinc-500">Saved in portfolio_tags • used for live filters &amp; dropdowns</div>
+            </div>
+            <div class="flex gap-2 flex-shrink-0">
+              <button class="btn btn-ghost btn-sm text-xs" data-action="edit" data-id="${tag.id}" data-name="${escapeAttr(tag.name)}">EDIT</button>
+              <button class="btn btn-ghost btn-sm text-xs text-red-400 hover:text-red-300" data-action="delete" data-id="${tag.id}" data-name="${escapeAttr(tag.name)}">DELETE</button>
+            </div>
+          `;
+
+          // Attach listeners
+          row.querySelector('[data-action="edit"]').addEventListener('click', () => editTag(tag.id, tag.name));
+          row.querySelector('[data-action="delete"]').addEventListener('click', () => deleteTagUI(tag.id, tag.name));
+
+          container.appendChild(row);
+        });
+      } catch (err) {
+        container.innerHTML = `<div class="text-red-400 p-4 text-sm">Failed to load tags: ${err.message || err}</div>`;
+      }
+    }
+
+    function escapeHtml(str) {
+      return (str || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+    function escapeAttr(str) {
+      return (str || '').replace(/"/g, '&quot;');
+    }
+
+    async function addNewTag() {
+      const input = document.getElementById('new-tag-name');
+      if (!input) return;
+      const name = (input.value || '').trim();
+      if (!name) {
+        alert('Enter a tag name (e.g. "Neo Traditional")');
+        return;
+      }
+
+      try {
+        await window.ThankQSupabase.addTag(name);
+        input.value = '';
+        window.ThankQ.showToast('Tag added successfully. It now appears in upload dropdowns and public filters.');
+        await refreshTagsList();
+        // If upload modal is currently open, repopulate its style select live
+        const modal = document.getElementById('upload-modal');
+        if (modal && !modal.classList.contains('hidden') && modal.classList.contains('flex')) {
+          const sel = document.getElementById('upload-style');
+          if (sel) {
+            const currentVal = sel.value;
+            sel.innerHTML = '<option value="">Select a style...</option>';
+            const freshTags = await window.ThankQSupabase.getTags();
+            freshTags.forEach(t => {
+              const o = document.createElement('option');
+              o.value = t.name; o.textContent = t.name;
+              sel.appendChild(o);
+            });
+            if (currentVal) sel.value = currentVal;
+          }
+        }
+      } catch (err) {
+        alert('Could not add tag: ' + (err.message || err));
+      }
+    }
+
+    async function editTag(id, currentName) {
+      const newName = prompt('Rename tag:', currentName);
+      if (!newName || newName.trim() === '' || newName.trim() === currentName) return;
+
+      try {
+        await window.ThankQSupabase.updateTag(id, newName.trim());
+        window.ThankQ.showToast('Tag renamed. Note: existing portfolio pieces keep their previous style value until you edit them.');
+        await refreshTagsList();
+      } catch (err) {
+        alert('Rename failed: ' + (err.message || err));
+      }
+    }
+
+    async function deleteTagUI(id, name) {
+      if (!confirm(`Delete tag "${name}"?\n\nThis removes it from the filter buttons and dropdowns.\nExisting tattoos that use "${name}" as their style will continue to work and display correctly (the style string is stored on each piece).`)) {
+        return;
+      }
+      try {
+        await window.ThankQSupabase.deleteTag(id);
+        window.ThankQ.showToast('Tag deleted.');
+        await refreshTagsList();
+        // Also refresh portfolio list in case (no visual change to pieces)
+        await refreshPortfolioList();
+      } catch (err) {
+        alert('Delete tag failed: ' + (err.message || err));
       }
     }
 
@@ -750,147 +904,6 @@
       renderSubmissionsList();
       updateStats();
     }
-
-    // ==================== TAGS / FILTERS MANAGEMENT ====================
-    let tagsCache = [];
-
-    async function renderTagsList() {
-      const container = document.getElementById('tags-list');
-      if (!container) return;
-
-      container.innerHTML = `<div class="text-xs text-zinc-500 p-3">Loading tags...</div>`;
-
-      try {
-        const tags = await window.ThankQSupabase.getTags();
-        tagsCache = tags;
-
-        container.innerHTML = '';
-
-        if (!tags.length) {
-          container.innerHTML = `
-            <div class="text-sm text-zinc-400 border border-dashed border-zinc-800 rounded-xl p-4">
-              No tags yet. Add some above — they will appear as filters on the public portfolio.
-            </div>`;
-          return;
-        }
-
-        tags.forEach(tag => {
-          const row = document.createElement('div');
-          row.className = 'flex items-center gap-3 bg-[#161618] border border-zinc-800 rounded-2xl px-4 py-2.5';
-
-          row.innerHTML = `
-            <div class="flex-1 font-medium">${tag.name}</div>
-            <div class="flex gap-2">
-              <button class="btn btn-ghost btn-sm text-xs" data-action="edit" data-id="${tag.id}" data-name="${tag.name.replace(/"/g, '&quot;')}">EDIT</button>
-              <button class="btn btn-ghost btn-sm text-xs text-red-400" data-action="delete" data-id="${tag.id}">DELETE</button>
-            </div>
-          `;
-
-          // Attach events safely
-          row.querySelector('[data-action="edit"]').onclick = () => editTag(tag.id, tag.name);
-          row.querySelector('[data-action="delete"]').onclick = () => deleteTagFromUI(tag.id, tag.name);
-
-          container.appendChild(row);
-        });
-      } catch (err) {
-        container.innerHTML = `<div class="text-red-400 p-3 text-sm">Failed to load tags: ${err.message || err}</div>`;
-      }
-    }
-
-    async function addNewTag() {
-      const input = document.getElementById('new-tag-input');
-      const val = input.value.trim();
-      if (!val) return;
-
-      try {
-        await window.ThankQSupabase.addTag(val);
-        input.value = '';
-        window.ThankQ.showToast(`Tag "${val}" added.`);
-        await renderTagsList();
-        // Refresh any open upload dropdowns
-        await refreshStyleDropdowns();
-      } catch (err) {
-        alert('Could not add tag: ' + (err.message || err));
-      }
-    }
-
-    async function editTag(id, currentName) {
-      const newName = prompt('Rename tag:', currentName);
-      if (!newName || newName.trim() === currentName) return;
-
-      try {
-        await window.ThankQSupabase.updateTag(id, newName);
-        window.ThankQ.showToast('Tag renamed.');
-        await renderTagsList();
-        await refreshStyleDropdowns();
-      } catch (err) {
-        alert('Rename failed: ' + (err.message || err));
-      }
-    }
-
-    async function deleteTagFromUI(id, name) {
-      if (!confirm(`Delete the tag "${name}"? Existing portfolio pieces using this tag will keep the old value.`)) return;
-
-      try {
-        await window.ThankQSupabase.deleteTag(id);
-        window.ThankQ.showToast('Tag deleted.');
-        await renderTagsList();
-        await refreshStyleDropdowns();
-      } catch (err) {
-        alert('Delete failed: ' + (err.message || err));
-      }
-    }
-
-    // Helper to re-populate style selects after tags change
-    async function refreshStyleDropdowns() {
-      // Re-populate any visible upload style dropdown
-      const styleSelect = document.getElementById('upload-style');
-      if (styleSelect && styleSelect.offsetParent !== null) { // visible
-        const current = styleSelect.value;
-        await populateStyleSelect(styleSelect, current);
-      }
-    }
-
-    async function populateStyleSelect(selectEl, currentValue = '') {
-      if (!selectEl) return;
-
-      selectEl.innerHTML = '';
-
-      try {
-        const tags = await window.ThankQSupabase.getTags();
-        tags.forEach(t => {
-          const opt = document.createElement('option');
-          opt.value = t.name;
-          opt.textContent = t.name;
-          if (t.name === currentValue) opt.selected = true;
-          selectEl.appendChild(opt);
-        });
-
-        // If the current value is not in the list anymore, keep it as a custom option
-        if (currentValue && !tags.some(t => t.name === currentValue)) {
-          const opt = document.createElement('option');
-          opt.value = currentValue;
-          opt.textContent = currentValue + ' (custom)';
-          opt.selected = true;
-          selectEl.appendChild(opt);
-        }
-      } catch (e) {
-        // Fallback to old list
-        const fallback = (window.ThankQSupabase.AVAILABLE_STYLES || []).filter(s => s !== 'All');
-        fallback.forEach(name => {
-          const opt = document.createElement('option');
-          opt.value = name;
-          opt.textContent = name;
-          if (name === currentValue) opt.selected = true;
-          selectEl.appendChild(opt);
-        });
-      }
-    }
-
-    // ==================== OVERRIDE / EXTEND EXISTING STYLE POPULATION ====================
-    // Patch the existing showUploadModal to use live tags
-    const _originalShowUploadModal = window.showUploadModal;
-    // We will re-define the population inside the existing function later via search/replace
 
     // Boot everything
     window.onload = bootAdmin;

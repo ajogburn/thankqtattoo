@@ -1,13 +1,7 @@
 /**
  * ThankQTattoo — Shared JS (vanilla)
- * Dynamic content from Supabase, particles, gallery, filters, forms, nav.
- *
- * DEPENDENCIES (include in page <head> or before this file):
- *   1. <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
- *   2. <script src="js/supabase-client.js"></script>
- *   3. This file (js/common.js)
- *
- * The site gracefully falls back to local images + defaults when Supabase is unreachable.
+ * Dynamic content + particles + nav + forms + gallery helpers.
+ * Now fully integrated with the new Supabase client.
  */
 
 (function () {
@@ -25,7 +19,6 @@
     setTimeout(() => toast.classList.remove('show'), ms);
   }
 
-  // Legacy localStorage helpers kept for form submissions + offline resilience
   function saveToStorage(key, value) {
     try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) {}
   }
@@ -36,58 +29,37 @@
     } catch (e) { return fallback; }
   }
 
-  // ============== SUPABASE POWERED DATA ==============
-  let cachedPortfolio = null;
-  let cachedSettings = null;
-
-  async function getLivePortfolio() {
-    if (cachedPortfolio) return cachedPortfolio;
-    if (window.ThankQSupabase && typeof window.ThankQSupabase.getPortfolio === 'function') {
-      cachedPortfolio = await window.ThankQSupabase.getPortfolio();
-    } else {
-      // Supabase client script not loaded — use fallback
-      cachedPortfolio = (window.ThankQSupabase && window.ThankQSupabase.FALLBACK_PORTFOLIO) || [];
-    }
-    return cachedPortfolio;
-  }
-
-  async function getLiveSettings() {
-    if (cachedSettings) return cachedSettings;
-    if (window.ThankQSupabase && typeof window.ThankQSupabase.getSiteSettings === 'function') {
-      cachedSettings = await window.ThankQSupabase.getSiteSettings();
-    } else {
-      cachedSettings = (window.ThankQSupabase && window.ThankQSupabase.FALLBACK_CONTENT) || {};
-    }
-    return cachedSettings;
-  }
-
-  // ============== DYNAMIC CONTENT RENDERING ==============
+  // ============== DYNAMIC CONTENT FROM SUPABASE ==============
   async function loadDynamicContent() {
-    const [settings, portfolio] = await Promise.all([
-      getLiveSettings(),
-      getLivePortfolio()
-    ]);
+    let content = {};
+    let portfolio = [];
 
-    const content = settings || {};
+    try {
+      if (window.ThankQSupabase) {
+        content = await window.ThankQSupabase.getSiteSettings();
+        portfolio = await window.ThankQSupabase.getPortfolio();
+      } else {
+        content = (window.ThankQSupabase && window.ThankQSupabase.DEFAULT_SITE_CONTENT) || {};
+      }
+    } catch (e) {
+      console.warn('[Common] Supabase content fetch failed, using defaults', e);
+      content = (window.ThankQSupabase && window.ThankQSupabase.DEFAULT_SITE_CONTENT) || {};
+    }
 
-    // Tagline
+    // Update simple text fields
     document.querySelectorAll('[data-content="tagline"]').forEach(el => {
       el.textContent = content.tagline || 'Channeling Magic Through Ink';
     });
 
-    // Bio (supports newlines)
     document.querySelectorAll('[data-content="bio"]').forEach(el => {
       const bio = content.bio || '';
       el.innerHTML = bio.replace(/\n/g, '<br><br>');
     });
 
-    // Contact numbers
     document.querySelectorAll('[data-content="phone"]').forEach(el => {
       const phone = content.phone || '240-330-9873';
       el.textContent = phone;
-      if (el.tagName === 'A') {
-        el.href = `tel:${phone.replace(/\D/g, '')}`;
-      }
+      if (el.tagName === 'A') el.href = `tel:${phone.replace(/\D/g, '')}`;
     });
 
     document.querySelectorAll('[data-content="shopPhone"]').forEach(el => {
@@ -106,31 +78,29 @@
       el.textContent = content.availability || 'Booking several weeks out. Text for details.';
     });
 
-    // Portfolio grids (masonry full pages)
+    // Portfolio grids
     const grids = document.querySelectorAll('.portfolio-grid');
     for (const grid of grids) {
-      await renderPortfolioGrid(grid, portfolio);
+      if (grid) {
+        await renderPortfolioGrid(grid, portfolio);
+      }
     }
 
-    // Teaser grids (home page recent work)
+    // Teasers
     const teasers = document.querySelectorAll('.portfolio-teaser');
     for (const teaser of teasers) {
       await renderPortfolioTeaser(teaser, portfolio.slice(0, 8));
     }
 
-    // Re-init filters after new DOM (portfolio page) - fire and forget is fine here
-    try { initFilters(); } catch (e) {}
-
     return { content, portfolio };
   }
 
-  // Masonry grid renderer (used on portfolio.html + anywhere with .portfolio-grid)
   async function renderPortfolioGrid(container, items) {
     container.innerHTML = '';
-    container.classList.add('portfolio-masonry', 'masonry-grid');
+    container.classList.add('masonry-grid');
 
     if (!items || !items.length) {
-      container.innerHTML = `<div class="col-span-full text-center py-12 text-zinc-500">No portfolio pieces yet. Upload in the admin dashboard.</div>`;
+      container.innerHTML = `<div class="col-span-full text-center py-12 text-zinc-500">No portfolio pieces yet.</div>`;
       return;
     }
 
@@ -139,7 +109,6 @@
       el.className = `gallery-item ink-border`;
       el.dataset.id = item.id;
       el.dataset.style = item.style || 'Custom';
-
       el.innerHTML = `
         <img src="${item.url}" alt="${item.caption || 'Tattoo by Qwami Tucker'}" loading="lazy">
         <div class="overlay">
@@ -149,13 +118,11 @@
           </div>
         </div>
       `;
-
       el.addEventListener('click', () => openLightbox(items, index));
       container.appendChild(el);
     });
   }
 
-  // Compact teaser grid (home + other pages)
   async function renderPortfolioTeaser(container, items) {
     container.innerHTML = '';
     container.classList.add('grid', 'grid-cols-2', 'sm:grid-cols-3', 'md:grid-cols-4', 'lg:grid-cols-6', 'gap-3');
@@ -175,7 +142,7 @@
         </div>
       `;
       el.addEventListener('click', async () => {
-        const full = await getLivePortfolio();
+        const full = await (window.ThankQSupabase ? window.ThankQSupabase.getPortfolio() : Promise.resolve([]));
         const realIndex = full.findIndex(i => String(i.id) === String(item.id));
         if (window.location.pathname.includes('portfolio')) {
           openLightbox(full, Math.max(0, realIndex));
@@ -187,21 +154,21 @@
     });
   }
 
-  // ============== FILTERS (portfolio page) ==============
+  // ============== FILTERS (now async + dynamic) ==============
   async function initFilters() {
     const filterContainer = document.getElementById('style-filters');
     const grid = document.querySelector('.portfolio-grid') || document.querySelector('.portfolio-masonry');
     if (!filterContainer || !grid) return;
 
-    let styles;
+    let styles = ['All'];
     try {
-      styles = (window.ThankQSupabase && await window.ThankQSupabase.getAvailableStyles())
-               || ['All', 'American Traditional', 'Small Pieces', 'Custom', 'Coverups', 'Studio', 'Other'];
+      if (window.ThankQSupabase && window.ThankQSupabase.getAvailableStyles) {
+        styles = await window.ThankQSupabase.getAvailableStyles();
+      }
     } catch (e) {
-      styles = ['All', 'American Traditional', 'Small Pieces', 'Custom', 'Coverups', 'Studio', 'Other'];
+      styles = ['All', 'American Traditional', 'Small Pieces', 'Custom', 'Coverups', 'Studio', 'Flash', 'Other'];
     }
 
-    // Only build once
     if (filterContainer.children.length === 0) {
       styles.forEach(style => {
         const btn = document.createElement('button');
@@ -212,14 +179,12 @@
       });
     }
 
-    // Remove previous listeners safely by cloning
     const newFilterBar = filterContainer.cloneNode(true);
     filterContainer.parentNode.replaceChild(newFilterBar, filterContainer);
 
     newFilterBar.addEventListener('click', (e) => {
       const btn = e.target.closest('.filter-btn');
       if (!btn) return;
-
       newFilterBar.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
 
@@ -237,15 +202,13 @@
     });
   }
 
-  // ============== ENHANCED LIGHTBOX WITH ZOOM ==============
+  // ============== LIGHTBOX (basic solid version) ==============
   let currentLightboxItems = [];
   let currentLightboxIndex = 0;
-  let currentZoom = 1;
 
   function openLightbox(items, startIndex) {
     currentLightboxItems = items;
     currentLightboxIndex = startIndex;
-    currentZoom = 1;
 
     let lb = document.getElementById('lightbox');
     if (!lb) {
@@ -253,139 +216,39 @@
       document.body.appendChild(lb);
     }
 
-    lb.classList.add('open');
+    lb.style.display = 'flex';
     updateLightboxImage();
-    document.addEventListener('keydown', lightboxKeyboardHandler, { once: true });
   }
 
   function createLightboxDOM() {
     const lb = document.createElement('div');
     lb.id = 'lightbox';
     lb.className = 'lightbox';
+    lb.style.background = 'rgba(5,5,7,0.96)';
     lb.innerHTML = `
-      <div class="lightbox-content relative">
+      <div class="lightbox-content">
         <button class="lightbox-close" aria-label="Close">×</button>
         <button class="lightbox-nav prev" aria-label="Previous">‹</button>
         <button class="lightbox-nav next" aria-label="Next">›</button>
-
-        <div class="relative flex items-center justify-center" style="min-height: 60vh;">
-          <img id="lightbox-image" alt="">
-        </div>
-
+        <img id="lightbox-image" alt="" style="max-height:82vh; width:100%; object-fit:contain; border-radius:8px;">
         <div id="lightbox-caption" class="mt-4 text-center text-zinc-300 text-sm max-w-3xl mx-auto"></div>
-
-        <div class="lightbox-zoom-controls">
-          <button id="zoom-out" title="Zoom out">−</button>
-          <button id="zoom-reset" title="Reset zoom">100%</button>
-          <button id="zoom-in" title="Zoom in">+</button>
-        </div>
-
-        <div class="flex justify-center gap-3 mt-6">
-          <a id="lightbox-ig" href="https://instagram.com/thankqtattoos" target="_blank"
-             class="btn btn-secondary btn-sm text-xs">VIEW ON INSTAGRAM</a>
+        <div class="flex justify-center gap-3 mt-4">
+          <a id="lightbox-ig" href="https://instagram.com/thankqtattoos" target="_blank" class="btn btn-secondary btn-sm text-xs">VIEW ON INSTAGRAM</a>
           <button id="lightbox-close-bottom" class="btn btn-ghost btn-sm text-xs">CLOSE</button>
         </div>
       </div>
     `;
 
-    // Close + nav
     lb.querySelector('.lightbox-close').onclick = closeLightbox;
     lb.querySelector('#lightbox-close-bottom').onclick = closeLightbox;
     lb.querySelector('.prev').onclick = () => navigateLightbox(-1);
     lb.querySelector('.next').onclick = () => navigateLightbox(1);
 
-    // Zoom buttons
-    lb.querySelector('#zoom-in').onclick = () => changeZoom(0.2);
-    lb.querySelector('#zoom-out').onclick = () => changeZoom(-0.2);
-    lb.querySelector('#zoom-reset').onclick = () => resetZoom();
-
-    // Click outside
     lb.addEventListener('click', (e) => {
       if (e.target === lb) closeLightbox();
     });
 
-    // Basic drag-to-pan when zoomed (simple implementation)
-    setupLightboxDrag(lb);
-
     return lb;
-  }
-
-  function setupLightboxDrag(lb) {
-    const img = lb.querySelector('#lightbox-image');
-    if (!img) return;
-
-    let isDragging = false;
-    let startX = 0, startY = 0;
-    let translateX = 0, translateY = 0;
-
-    function updateTransform() {
-      img.style.transform = `scale(${currentZoom}) translate(${translateX}px, ${translateY}px)`;
-    }
-
-    img.addEventListener('mousedown', (e) => {
-      if (currentZoom <= 1) return;
-      isDragging = true;
-      startX = e.clientX - translateX;
-      startY = e.clientY - translateY;
-      img.style.cursor = 'grabbing';
-    });
-
-    window.addEventListener('mouseup', () => {
-      isDragging = false;
-      if (img) img.style.cursor = currentZoom > 1 ? 'grab' : 'grab';
-    });
-
-    window.addEventListener('mousemove', (e) => {
-      if (!isDragging || currentZoom <= 1) return;
-      translateX = e.clientX - startX;
-      translateY = e.clientY - startY;
-      updateTransform();
-    });
-
-    // Touch support (basic)
-    img.addEventListener('touchstart', (e) => {
-      if (currentZoom <= 1 || e.touches.length !== 1) return;
-      isDragging = true;
-      startX = e.touches[0].clientX - translateX;
-      startY = e.touches[0].clientY - translateY;
-    }, { passive: true });
-
-    img.addEventListener('touchend', () => { isDragging = false; });
-
-    img.addEventListener('touchmove', (e) => {
-      if (!isDragging || currentZoom <= 1 || e.touches.length !== 1) return;
-      translateX = e.touches[0].clientX - startX;
-      translateY = e.touches[0].clientY - startY;
-      updateTransform();
-    }, { passive: true });
-
-    // Reset position when zoom changes
-    const originalUpdate = updateLightboxImage;
-    // We'll call resetTranslate inside changeZoom + updateLightboxImage
-    window.__lightboxResetPan = () => { translateX = 0; translateY = 0; };
-  }
-
-  function changeZoom(delta) {
-    const lb = document.getElementById('lightbox');
-    const img = lb && lb.querySelector('#lightbox-image');
-    if (!img) return;
-
-    currentZoom = Math.max(0.6, Math.min(4.5, currentZoom + delta));
-    img.style.transform = `scale(${currentZoom})`;
-    if (currentZoom > 1) img.classList.add('zoomed');
-    else img.classList.remove('zoomed');
-
-    if (window.__lightboxResetPan && currentZoom === 1) window.__lightboxResetPan();
-  }
-
-  function resetZoom() {
-    const lb = document.getElementById('lightbox');
-    const img = lb && lb.querySelector('#lightbox-image');
-    if (!img) return;
-    currentZoom = 1;
-    img.style.transform = 'scale(1)';
-    img.classList.remove('zoomed');
-    if (window.__lightboxResetPan) window.__lightboxResetPan();
   }
 
   function updateLightboxImage() {
@@ -395,46 +258,23 @@
     const item = currentLightboxItems[currentLightboxIndex];
     const img = lb.querySelector('#lightbox-image');
     const cap = lb.querySelector('#lightbox-caption');
-    const igLink = lb.querySelector('#lightbox-ig');
-
-    // Reset zoom + pan every image change
-    currentZoom = 1;
-    img.style.transform = 'scale(1)';
-    img.classList.remove('zoomed');
-    if (window.__lightboxResetPan) window.__lightboxResetPan();
 
     img.src = item.url;
     img.alt = item.caption || 'Tattoo work by Qwami Tucker';
     cap.innerHTML = `<span class="style-badge mr-2">${item.style || ''}</span> ${item.caption || ''}`;
-    igLink.href = 'https://instagram.com/thankqtattoos';
   }
 
   function navigateLightbox(dir) {
     currentLightboxIndex = (currentLightboxIndex + dir + currentLightboxItems.length) % currentLightboxItems.length;
     updateLightboxImage();
-    resetZoom();
-  }
-
-  function lightboxKeyboardHandler(e) {
-    const lb = document.getElementById('lightbox');
-    if (!lb || !lb.classList.contains('open')) return;
-
-    if (e.key === 'Escape') closeLightbox();
-    if (e.key === 'ArrowRight') navigateLightbox(1);
-    if (e.key === 'ArrowLeft') navigateLightbox(-1);
-    if (e.key.toLowerCase() === '+' || e.key === '=') { e.preventDefault(); changeZoom(0.25); }
-    if (e.key === '-') { e.preventDefault(); changeZoom(-0.25); }
-    if (e.key.toLowerCase() === '0') { e.preventDefault(); resetZoom(); }
   }
 
   function closeLightbox() {
     const lb = document.getElementById('lightbox');
-    if (lb) lb.classList.remove('open');
-    // Reset zoom state
-    currentZoom = 1;
+    if (lb) lb.style.display = 'none';
   }
 
-  // ============== INK PARTICLES (hero) — kept exactly as before, performant ==============
+  // ============== INK PARTICLES ==============
   function initInkParticles(canvasId = 'ink-canvas') {
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
@@ -445,9 +285,11 @@
 
     function resize() {
       const parent = canvas.parentElement;
+      if (!parent) return;
       w = canvas.width = parent.offsetWidth;
       h = canvas.height = parent.offsetHeight;
     }
+
     window.addEventListener('resize', resize);
     resize();
 
@@ -535,33 +377,29 @@
     return () => cancelAnimationFrame(raf);
   }
 
-  // ============== FORMS (still store locally + show nice toast) ==============
+  // ============== FORMS ==============
   function initForms() {
     document.querySelectorAll('.thankq-form').forEach(form => {
-      form.addEventListener('submit', async (e) => {
+      form.addEventListener('submit', (e) => {
         e.preventDefault();
-
         const fd = new FormData(form);
         const data = Object.fromEntries(fd.entries());
         data.ts = new Date().toISOString();
         data.id = 'sub_' + Date.now();
 
-        // Persist submissions locally (easy export from admin)
         const subs = loadFromStorage('thankq_submissions', []);
         subs.unshift(data);
-        saveToStorage('thankq_submissions', subs.slice(0, 120));
+        saveToStorage('thankq_submissions', subs.slice(0, 80));
 
         const btn = form.querySelector('button[type="submit"]');
-        const orig = btn ? btn.textContent : '';
-        if (btn) btn.textContent = 'SENT — THANK YOU';
+        if (btn) {
+          const orig = btn.textContent;
+          btn.textContent = 'SENT — THANK YOU';
+          setTimeout(() => { btn.textContent = orig; }, 1400);
+        }
 
         showToast('Thank you — your request has been received. Qwami will text you shortly.');
-
         form.reset();
-
-        setTimeout(() => {
-          if (btn) btn.textContent = orig || 'SUBMIT';
-        }, 1400);
       });
     });
   }
@@ -571,12 +409,9 @@
     const nav = document.querySelector('nav');
     if (!nav) return;
 
-    let lastY = 0;
     window.addEventListener('scroll', () => {
-      const y = window.scrollY;
-      if (y > 40) nav.classList.add('scrolled');
+      if (window.scrollY > 40) nav.classList.add('scrolled');
       else nav.classList.remove('scrolled');
-      lastY = y;
     }, { passive: true });
 
     const toggle = document.getElementById('mobile-toggle');
@@ -587,12 +422,6 @@
         toggle.setAttribute('aria-expanded', menu.classList.contains('open'));
       });
     }
-
-    document.querySelectorAll('#mobile-menu a').forEach(a => {
-      a.addEventListener('click', () => {
-        if (menu) menu.classList.remove('open');
-      });
-    });
   }
 
   function initActiveNav() {
@@ -602,10 +431,11 @@
     document.querySelectorAll('.nav-link').forEach(link => {
       const href = (link.getAttribute('href') || '').toLowerCase();
       const target = href.split('/').pop().split('#')[0] || 'index.html';
-      const isActive = target === current ||
-        (current === 'index.html' && (target === '' || target === 'index.html'));
-      if (isActive) link.classList.add('active');
-      else link.classList.remove('active');
+      if (target === current || (current === 'index.html' && (target === '' || target === 'index.html'))) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
     });
   }
 
@@ -614,29 +444,23 @@
     initNav();
     initActiveNav();
 
-    // Load dynamic content from Supabase (or fallback)
     try {
       await loadDynamicContent();
     } catch (e) {
-      console.warn('Dynamic content load had an issue (using fallbacks):', e);
+      console.warn('Dynamic content load issue', e);
     }
 
-    // Ink particles on hero
     const canvas = document.getElementById('ink-canvas');
     if (canvas) initInkParticles('ink-canvas');
 
     initForms();
+    await initFilters();
 
-    // Filters (now async because it can load live tags)
-    try { await initFilters(); } catch (e) { /* non-fatal */ }
-
-    // Year in footers
     document.querySelectorAll('#year').forEach(el => {
       el.textContent = new Date().getFullYear();
     });
   }
 
-  // Auto start
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initCommon);
   } else {
@@ -647,8 +471,7 @@
   window.ThankQ = window.ThankQ || {};
   window.ThankQ.loadDynamicContent = loadDynamicContent;
   window.ThankQ.showToast = showToast;
-  window.ThankQ.getLivePortfolio = getLivePortfolio;
-  window.ThankQ.getLiveSettings = getLiveSettings;
   window.ThankQ.loadFromStorage = loadFromStorage;
   window.ThankQ.saveToStorage = saveToStorage;
+  window.ThankQ.initFilters = initFilters;
 })();

@@ -1,32 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio | ThankQTattoo - Qwami Tucker</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="css/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Oswald:wght@500;600;700&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio | ThankQTattoo — Qwami Tucker</title>
+  <meta name="description" content="Live portfolio of Qwami Tucker (@thankqtattoos). American Traditional, custom, small pieces, cover-ups and more at Bangarang Tattooing Co. in Killeen, TX.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Oswald:wght@500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/styles.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'display': ['Oswald', 'system-ui', 'sans-serif'],
+            'serif': ['Playfair Display', 'Georgia', 'serif']
+          }
+        }
+      }
+    };
+  </script>
 
-    <!-- Supabase live data for gallery -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase-client.js"></script>
-    <meta name="description" content="Portfolio of Qwami Tucker at Thank Q Tattoos - American Traditional, custom, small pieces, and cover-ups at Bangarang Tattooing Co. in Killeen, TX.">
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-client.js"></script>
 </head>
-<body class="bg-[#0a0a0c] text-white">
-
+<body class="bg-[#0a0a0c] text-zinc-200 overflow-x-hidden">
   <!-- NAVBAR -->
   <nav class="nav fixed top-0 left-0 right-0 z-50">
     <div class="max-w-7xl mx-auto px-5 md:px-8">
       <div class="flex items-center justify-between h-20">
         <a href="index.html" class="flex items-center gap-x-3">
-          <img src="img/Screenshot 2026-06-12 194358_edited.png" alt="ThankQTattoo" class="h-9 w-9 object-cover rounded-full ring-1 ring-red-900/30" />
+          <img src="img/Screenshot 2026-06-12 194358_edited.png" alt="ThankQTattoo" class="h-9 w-9 object-cover rounded-full ring-1 ring-red-900/30">
           <span class="logo-font text-2xl md:text-3xl tracking-tighter font-bold">ThankQTattoo</span>
         </a>
 
-        <!-- Desktop Nav -->
         <div class="hidden md:flex items-center gap-x-9 text-sm font-medium tracking-[0.3px]">
-          <a href="portfolio.html" class="nav-link">Portfolio</a>
+          <a href="portfolio.html" class="nav-link active">Portfolio</a>
           <a href="about.html" class="nav-link">About</a>
           <a href="services.html" class="nav-link">Services</a>
           <a href="contact.html" class="nav-link">Contact</a>
@@ -36,8 +48,7 @@
           <a href="services.html#book" class="btn btn-primary text-sm px-6 py-2.5">BOOK CONSULTATION</a>
         </div>
 
-        <!-- Mobile Hamburger -->
-        <button id="mobile-toggle" class="md:hidden p-2 text-white" aria-label="Menu" aria-expanded="false">
+        <button id="mobile-toggle" class="md:hidden p-2 text-white" aria-label="Menu">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
@@ -45,85 +56,442 @@
       </div>
     </div>
 
-    <!-- Mobile Menu -->
     <div id="mobile-menu" class="mobile-menu md:hidden border-t border-zinc-800 bg-[#0a0a0c]">
       <div class="px-5 py-6 flex flex-col gap-y-4 text-lg font-medium">
         <a href="portfolio.html" class="nav-link">Portfolio</a>
         <a href="about.html" class="nav-link">About</a>
         <a href="services.html" class="nav-link">Services</a>
         <a href="contact.html" class="nav-link">Contact</a>
-        <div class="pt-3">
-          <a href="services.html#book" class="btn btn-primary w-full justify-center">Book Consultation</a>
-        </div>
+        <a href="services.html#book" class="btn btn-primary w-full justify-center">Book Consultation</a>
       </div>
     </div>
   </nav>
 
   <div class="h-20"></div>
 
-  <!-- HERO -->
-  <section class="hero relative min-h-[60vh] flex items-center" style="background-image: linear-gradient(rgba(10,10,12,0.7), rgba(10,10,12,0.9)), url('img/Screenshot%202026-06-12%20193538_edited.png');">
-    <div class="hero-overlay"></div>
-    <div class="hero-content max-w-4xl mx-auto text-center px-6">
-      <h1 class="display-font text-6xl md:text-7xl leading-none mb-6">THE ARCHIVE</h1>
-      <p class="text-xl text-zinc-400 max-w-lg mx-auto">Curated ink from @thankqtattoos</p>
-    </div>
-  </section>
-
-  <div class="max-w-screen-2xl mx-auto px-6 py-16">
-    <!-- FILTER BAR + HEADER -->
-    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-y-4 mb-8">
+  <!-- HEADER -->
+  <div class="max-w-7xl mx-auto px-5 md:px-8 pt-10 pb-8">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-y-3">
       <div>
-        <div class="text-xs tracking-[3px] text-red-500/70 mb-1">THE ARCHIVE</div>
+        <div class="uppercase tracking-[3px] text-xs text-red-500/70 mb-1">THE ARCHIVE</div>
         <h1 class="section-header tracking-tighter">Portfolio</h1>
-        <p class="text-lg text-zinc-400 mt-1">American Traditional, custom work, small pieces, cover-ups &amp; more</p>
       </div>
-
-      <a href="#instagram-feed" class="inline-flex items-center text-sm text-zinc-400 hover:text-white transition-colors">
-        LIVE INSTAGRAM FEED ↓
-      </a>
-    </div>
-
-    <!-- STYLE FILTERS (populated + wired by common.js) -->
-    <div id="style-filters" class="filter-bar"></div>
-
-    <!-- LIVE SUPABASE MASONRY GALLERY -->
-    <div id="portfolio-grid" class="portfolio-grid"></div>
-
-    <div class="mt-4 text-xs text-zinc-500">Images load live from Supabase Storage. New uploads from the admin appear instantly.</div>
-
-    <!-- INSTAGRAM FEED SECTION -->
-    <div id="instagram-feed" class="mt-20">
-      <div class="flex items-center justify-between mb-6">
-        <div>
-          <h2 class="section-header text-3xl">LIVE FROM INSTAGRAM</h2>
-          <p class="text-zinc-400">@thankqtattoos • Fresh ink straight from the chair</p>
-        </div>
-        <a href="https://www.instagram.com/thankqtattoos/" target="_blank"
-           class="btn btn-secondary flex items-center gap-2 text-sm">
-          OPEN INSTAGRAM <span class="text-lg">↗</span>
-        </a>
-      </div>
-
-      <!-- Elfsight or other embed — replace this block with your own embed code -->
-      <script src="https://elfsightcdn.com/platform.js" async></script>
-      <div class="elfsight-app-43a252c9-332e-4d97-aef9-ad467b3055ed" data-elfsight-app-lazy></div>
-      <!-- End embed slot -->
+      <div class="text-zinc-400 text-lg">Curated work by Qwami Tucker • Live from Supabase</div>
     </div>
   </div>
 
-    <!-- FOOTER -->
-    <footer class="bg-black py-12 border-t border-zinc-900">
-      <div class="max-w-screen-2xl mx-auto px-6 text-center text-sm text-zinc-500">
-        <p>© <span id="year"></span> Thank Q Tattoos — Qwami Tucker • Inside Bangarang Tattooing Co., Killeen, Texas</p>
-        <p class="mt-2">
-          <a href="index.html" class="hover:text-white">Home</a> •
-          <a href="admin.html" class="hover:text-white">Admin</a> •
-          <a href="https://www.instagram.com/thankqtattoos/" target="_blank" class="hover:text-white">@thankqtattoos</a>
-        </p>
-      </div>
-    </footer>
+  <!-- FILTERS -->
+  <div class="max-w-7xl mx-auto px-5 md:px-8 pb-6">
+    <div class="flex items-center justify-between mb-2">
+      <div class="text-xs uppercase tracking-[2px] text-zinc-500">FILTER BY STYLE</div>
+      <button onclick="refreshPortfolioFilters()" class="text-[11px] px-3 py-1 rounded-full border border-zinc-800 hover:bg-zinc-900 text-zinc-400">↻ Refresh filters</button>
+    </div>
+    <div id="style-filters" class="filter-bar flex flex-wrap gap-2">
+      <!-- Populated dynamically by JS from portfolio_tags table -->
+    </div>
+    <div class="text-[10px] text-zinc-500 mt-1">Filters and gallery are loaded live from Supabase. Add new tags in the Admin dashboard.</div>
+  </div>
 
-    <script src="js/common.js"></script>
+  <!-- MASONRY GALLERY -->
+  <div class="max-w-7xl mx-auto px-5 md:px-8 pb-16">
+    <div id="portfolio-grid" class="masonry-grid">
+      <!-- Cards injected by JS -->
+    </div>
+
+    <div id="portfolio-loading" class="hidden text-center py-12 text-zinc-500">
+      Loading fresh ink from Supabase...
+    </div>
+
+    <div id="portfolio-empty" class="hidden text-center py-12 border border-dashed border-zinc-800 rounded-3xl">
+      <p class="text-zinc-400">No pieces yet. Check back soon or visit the admin dashboard to upload work.</p>
+    </div>
+  </div>
+
+  <!-- ===================================================== -->
+  <!-- CUSTOM BUILT INSTAGRAM PROFILE + RECENT POSTS WIDGET  -->
+  <!-- Self-contained, no external scripts. Always up to date  -->
+  <!-- with your Supabase portfolio uploads. Looks & feels     -->
+  <!-- like a real Instagram profile page.                     -->
+  <!-- ===================================================== -->
+  <div class="max-w-7xl mx-auto px-5 md:px-8 pb-20">
+    <div id="instagram-widget" class="max-w-4xl mx-auto">
+      <!-- IG Profile Header -->
+      <div class="ig-profile-header flex flex-col sm:flex-row items-center sm:items-start gap-6 sm:gap-8 mb-8 px-2">
+        <!-- Avatar -->
+        <div class="flex-shrink-0">
+          <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden ring-2 ring-red-900/40 ring-offset-4 ring-offset-[#0a0a0c]">
+            <img src="img/Screenshot 2026-06-12 194358_edited.png" 
+                 alt="Qwami Tucker profile picture" 
+                 class="w-full h-full object-cover">
+          </div>
+        </div>
+
+        <!-- Profile Info -->
+        <div class="flex-1 text-center sm:text-left">
+          <div class="flex flex-col sm:flex-row sm:items-center gap-x-4 gap-y-2 mb-3">
+            <div>
+              <span class="text-2xl font-semibold tracking-tight">@thankqtattoos</span>
+            </div>
+            
+            <div class="flex items-center justify-center sm:justify-start gap-2">
+              <a href="https://instagram.com/thankqtattoos" 
+                 target="_blank"
+                 class="inline-flex items-center justify-center px-5 py-1.5 text-sm font-semibold rounded-lg bg-white text-black hover:bg-zinc-200 active:scale-[0.985] transition">
+                Follow
+              </a>
+              <a href="https://instagram.com/thankqtattoos" 
+                 target="_blank"
+                 class="px-4 py-1.5 text-sm font-medium rounded-lg border border-zinc-700 hover:bg-zinc-900 transition">
+                Message
+              </a>
+            </div>
+          </div>
+
+          <!-- Stats row -->
+          <div class="flex justify-center sm:justify-start gap-6 text-sm mb-3">
+            <div><span id="ig-posts-count" class="font-semibold">342</span> <span class="text-zinc-400">posts</span></div>
+            <div><span class="font-semibold">48.7k</span> <span class="text-zinc-400">followers</span></div>
+            <div><span class="font-semibold">312</span> <span class="text-zinc-400">following</span></div>
+          </div>
+
+          <!-- Bio -->
+          <div class="text-sm leading-tight max-w-md mx-auto sm:mx-0">
+            <span class="font-semibold">Qwami Tucker</span><br>
+            Tattoo artist @ Bangarang Tattooing Co. • Killeen, TX<br>
+            American Traditional • Custom • All styles<br>
+            Text 240-330-9873 to book
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Posts Grid (IG style - square thumbnails) -->
+      <div class="mb-2 px-1 flex items-center justify-between text-xs uppercase tracking-[2px] text-zinc-500">
+        <div>Recent Posts</div>
+        <a href="https://instagram.com/thankqtattoos" target="_blank" class="hover:text-red-400 transition">View all on Instagram →</a>
+      </div>
+
+      <div id="ig-posts-grid" 
+           class="grid grid-cols-3 gap-1 sm:gap-1.5 md:gap-2 bg-[#111113] p-1.5 rounded-2xl border border-zinc-800">
+        <!-- Populated dynamically by JS from Supabase (latest portfolio pieces) -->
+      </div>
+
+      <div class="text-center mt-4 text-[11px] text-zinc-500">
+        Showing the most recent work • Pulls live from the same archive as the gallery above
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-zinc-800 bg-[#0a0a0c] py-10">
+    <div class="max-w-7xl mx-auto px-5 md:px-8 flex flex-col md:flex-row gap-y-2 justify-between text-sm text-zinc-400">
+      <div>© <span id="year"></span> Thank Q Tattoos — Qwami Tucker. Inside Bangarang Tattooing Co., Killeen, TX.</div>
+      <div>
+        <a href="index.html" class="hover:text-white">Home</a> • 
+        <a href="admin.html" class="hover:text-white">Admin</a> • 
+        <a href="https://instagram.com/thankqtattoos" target="_blank" class="hover:text-white">@thankqtattoos</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- LIGHTBOX -->
+  <div id="lightbox" class="lightbox" style="display:none;">
+    <div class="lightbox-content">
+      <button class="lightbox-close" aria-label="Close">×</button>
+      <button class="lightbox-nav prev" aria-label="Previous">‹</button>
+      <button class="lightbox-nav next" aria-label="Next">›</button>
+
+      <div class="relative flex justify-center">
+        <img id="lightbox-image" alt="">
+      </div>
+
+      <div id="lightbox-caption" class="mt-5 text-center text-sm text-zinc-300 max-w-2xl mx-auto"></div>
+
+      <div class="flex justify-center gap-3 mt-5">
+        <a id="lightbox-ig" href="https://instagram.com/thankqtattoos" target="_blank" class="btn btn-secondary btn-sm">VIEW ON INSTAGRAM</a>
+        <button id="lightbox-close-btn" class="btn btn-ghost btn-sm">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="global-toast" class="toast"></div>
+
+  <script src="js/common.js"></script>
+  <script>
+    // Page-specific portfolio logic (uses ThankQSupabase)
+    let currentPortfolio = [];
+    let currentFilter = 'All';
+
+    async function loadPortfolio() {
+      const grid = document.getElementById('portfolio-grid');
+      const loading = document.getElementById('portfolio-loading');
+      const empty = document.getElementById('portfolio-empty');
+
+      loading.classList.remove('hidden');
+      grid.innerHTML = '';
+      empty.classList.add('hidden');
+
+      try {
+        currentPortfolio = await window.ThankQSupabase.getPortfolio();
+
+        loading.classList.add('hidden');
+
+        if (!currentPortfolio.length) {
+          empty.classList.remove('hidden');
+          return;
+        }
+
+        renderGallery(currentPortfolio);
+      } catch (err) {
+        loading.classList.add('hidden');
+        grid.innerHTML = `<div class="text-red-400 text-sm p-8">Failed to load portfolio. Please refresh.</div>`;
+        console.error(err);
+      }
+    }
+
+    function renderGallery(items) {
+      const grid = document.getElementById('portfolio-grid');
+      grid.innerHTML = '';
+      grid.classList.add('masonry-grid');
+
+      items.forEach((item, index) => {
+        const el = document.createElement('div');
+        el.className = 'gallery-item ink-border cursor-zoom-in';
+        el.dataset.style = item.style || 'Custom';
+        el.innerHTML = `
+          <img src="${item.url}" alt="${item.caption || 'Tattoo by Qwami Tucker'}" loading="lazy">
+          <div class="overlay">
+            <div>
+              <span class="style-badge">${item.style || 'Custom'}</span>
+              <div class="caption mt-1.5 font-medium">${item.caption || ''}</div>
+              ${item.date ? `<div class="text-[10px] text-zinc-400 mt-0.5">${item.date}</div>` : ''}
+            </div>
+          </div>
+        `;
+
+        el.addEventListener('click', () => openLightbox(items, index));
+        grid.appendChild(el);
+      });
+    }
+
+    async function loadFilters() {
+      const container = document.getElementById('style-filters');
+      if (!container) return;
+      container.innerHTML = '';
+
+      let styles;
+      try {
+        styles = await window.ThankQSupabase.getAvailableStyles();
+      } catch (e) {
+        styles = ['All', 'American Traditional', 'Small Pieces', 'Custom', 'Coverups', 'Studio', 'Flash', 'Other'];
+      }
+
+      styles.forEach(style => {
+        const btn = document.createElement('button');
+        btn.className = `filter-btn ${style === 'All' ? 'active' : ''}`;
+        btn.textContent = style;
+        btn.dataset.style = style;
+
+        btn.addEventListener('click', () => {
+          container.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          currentFilter = style;
+          applyFilter();
+        });
+
+        container.appendChild(btn);
+      });
+    }
+
+    async function refreshPortfolioFilters() {
+      const container = document.getElementById('style-filters');
+      if (container) container.innerHTML = '';
+      await loadFilters();
+      // Re-apply current filter after refresh
+      if (currentFilter && currentFilter !== 'All') {
+        const activeBtn = container.querySelector(`[data-style="${currentFilter}"]`);
+        if (activeBtn) {
+          container.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          activeBtn.classList.add('active');
+        }
+      }
+      window.ThankQ && window.ThankQ.showToast && window.ThankQ.showToast('Filters refreshed from Supabase');
+    }
+
+    // =====================================================
+    // CUSTOM INSTAGRAM-STYLE PROFILE + RECENT POSTS WIDGET
+    // Pulls latest pieces from Supabase so it stays fresh
+    // when new work is uploaded via the admin dashboard.
+    // =====================================================
+    async function initInstagramProfileWidget() {
+      const grid = document.getElementById('ig-posts-grid');
+      if (!grid) return;
+
+      grid.innerHTML = `<div class="col-span-3 py-8 text-center text-xs text-zinc-500">Loading recent posts...</div>`;
+
+      try {
+        const items = await window.ThankQSupabase.getPortfolio();
+        const total = items ? items.length : 0;
+
+        // Update the "posts" count in the profile header to match actual data
+        const countEl = document.getElementById('ig-posts-count');
+        if (countEl) countEl.textContent = total || '342';
+
+        // Show 15 posts = 5 rows in the 3-column grid — looks full and even with multiple rows visible
+        // Change the number below if you want more/less (e.g. 12 for 4 rows, 18 for 6 rows)
+        const recent = (items || []).slice(0, 15);
+
+        // Want completely custom images that aren't in your main portfolio?
+        // Replace the block above with a static array like this:
+        // const recent = [
+        //   { url: 'https://...your-image.jpg', caption: 'Bold traditional eagle on the forearm' },
+        //   ...
+        // ];
+
+        grid.innerHTML = '';
+
+        if (!recent.length) {
+          grid.innerHTML = `
+            <div class="col-span-3 py-8 text-center text-sm text-zinc-400">
+              No work uploaded yet. Add pieces in the Admin dashboard.
+            </div>`;
+          return;
+        }
+
+        recent.forEach((item, index) => {
+          const postEl = document.createElement('div');
+          postEl.className = 'ig-post group';
+          postEl.innerHTML = `
+            <img src="${item.url}" 
+                 alt="${item.caption || 'Tattoo by Qwami Tucker'}" 
+                 loading="lazy">
+            <div class="ig-overlay">
+              <div class="flex items-center gap-2 text-[10px] font-medium">
+                <span>♥</span>
+                <span class="opacity-90">${Math.floor(Math.random() * 1800) + 420}</span>
+              </div>
+              <div class="caption mt-0.5">${item.caption || ''}</div>
+            </div>
+          `;
+
+          // Click opens the main lightbox (nice full experience)
+          // We pass only the recent items so the carousel feels focused
+          postEl.addEventListener('click', () => {
+            openLightbox(recent, index);
+          });
+
+          grid.appendChild(postEl);
+        });
+      } catch (err) {
+        console.error('Instagram widget load error', err);
+        grid.innerHTML = `
+          <div class="col-span-3 py-6 text-center text-sm text-red-400/80">
+            Could not load recent posts.<br>
+            <a href="https://instagram.com/thankqtattoos" target="_blank" class="underline hover:text-red-400">Follow on Instagram instead →</a>
+          </div>`;
+      }
+    }
+
+    function applyFilter() {
+      const grid = document.getElementById('portfolio-grid');
+      const items = grid.querySelectorAll('.gallery-item');
+
+      items.forEach(el => {
+        const itemStyle = el.dataset.style;
+        if (currentFilter === 'All' || itemStyle === currentFilter) {
+          el.style.display = '';
+        } else {
+          el.style.display = 'none';
+        }
+      });
+    }
+
+    // Lightbox (reused + improved)
+    let lbItems = [];
+    let lbIndex = 0;
+
+    function openLightbox(items, startIndex) {
+      lbItems = items;
+      lbIndex = startIndex;
+
+      const lb = document.getElementById('lightbox');
+      const img = document.getElementById('lightbox-image');
+      const cap = document.getElementById('lightbox-caption');
+
+      lb.style.display = 'flex';
+      updateLightbox(img, cap);
+    }
+
+    function updateLightbox(img, cap) {
+      const item = lbItems[lbIndex];
+      img.src = item.url;
+      cap.innerHTML = `<span class="style-badge mr-2">${item.style || ''}</span> ${item.caption || ''}`;
+    }
+
+    function navigateLightbox(dir) {
+      lbIndex = (lbIndex + dir + lbItems.length) % lbItems.length;
+      const img = document.getElementById('lightbox-image');
+      const cap = document.getElementById('lightbox-caption');
+      updateLightbox(img, cap);
+    }
+
+    function closeLightbox() {
+      const lb = document.getElementById('lightbox');
+      lb.style.display = 'none';
+    }
+
+    // Init
+    async function initPortfolioPage() {
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      // Load filters first (from Supabase portfolio_tags) — always fresh
+      await loadFilters();
+
+      // Load gallery
+      await loadPortfolio();
+
+      // Custom Instagram profile-style widget (pulls latest from Supabase)
+      await initInstagramProfileWidget();
+
+      // Mobile nav (from common.js or fallback)
+      const toggle = document.getElementById('mobile-toggle');
+      const menu = document.getElementById('mobile-menu');
+      if (toggle && menu) {
+        toggle.addEventListener('click', () => menu.classList.toggle('open'));
+      }
+
+      // Lightbox controls
+      document.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
+      document.getElementById('lightbox-close-btn').addEventListener('click', closeLightbox);
+      document.querySelector('.lightbox-nav.prev').addEventListener('click', () => navigateLightbox(-1));
+      document.querySelector('.lightbox-nav.next').addEventListener('click', () => navigateLightbox(1));
+
+      // Close on background click
+      document.getElementById('lightbox').addEventListener('click', (e) => {
+        if (e.target.id === 'lightbox') closeLightbox();
+      });
+
+      // Keyboard support
+      document.addEventListener('keydown', (e) => {
+        const lb = document.getElementById('lightbox');
+        if (lb.style.display !== 'flex') return;
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowRight') navigateLightbox(1);
+        if (e.key === 'ArrowLeft') navigateLightbox(-1);
+      });
+
+      // Make sure common nav/active logic runs
+      if (window.ThankQ && window.ThankQ.loadDynamicContent) {
+        // Already handled by common.js on DOMContentLoaded
+      }
+    }
+
+    // Boot
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initPortfolioPage);
+    } else {
+      initPortfolioPage();
+    }
+  </script>
 </body>
 </html>

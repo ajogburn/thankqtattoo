@@ -63,10 +63,10 @@ The site supports **two modes** on Portfolio and Home teaser:
 3. Connect Instagram account or use public profile @thankqtattoos (or your business/creator account).
 4. Customize style to match the site (dark theme, blood red accents, masonry/grid layout).
 5. Copy the generated **Embed code** (the `<script>` + `<div>` block).
-6. In `portfolio.html` (and optionally `index.html`), find the comment:
+6. In `portfolio.html` (and optionally `index.html`), find the big comment block that starts with:
 
    ```html
-   <!-- INSTAGRAM WIDGET PLACEHOLDER - Replace this entire div with your Elfsight/EmbedSocial embed code -->
+   <!-- INSTAGRAM WIDGET PLACEHOLDER - Replace this entire .instagram-widget div with your Elfsight/EmbedSocial embed code -->
    ```
 
 7. Paste the widget code in its place.

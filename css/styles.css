@@ -593,3 +593,107 @@ a, button {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
+
+/* Admin Tags management specific polish */
+#tags-list .admin-row {
+  transition: background .1s ease, border-color .1s ease;
+}
+#tags-list .admin-row:hover {
+  border-color: #3f3f46;
+  background: #1a1a1d;
+}
+
+/* Extra modern touch for filter bar on public portfolio */
+.filter-bar {
+  padding-bottom: 2px;
+}
+.filter-bar .filter-btn {
+  font-size: 0.8rem;
+  padding: 0.35rem 0.95rem;
+}
+
+/* Upload progress polish */
+#upload-progress-wrap .progress-bar {
+  background: #1f1f22;
+}
+
+/* ============================================
+   Instagram Live Feed Widget Styling
+   (Elfsight, EmbedSocial, Juicer, SociableKit, etc.)
+   Replace the inner content of .instagram-widget in portfolio.html
+   with the embed code you copy from the service.
+   ============================================ */
+.instagram-widget {
+  background: #111113;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  min-height: 420px; /* prevents big layout jump when posts load */
+}
+
+.instagram-widget .elfsight-widget,
+.instagram-widget [class*="elfsight"],
+.instagram-widget [class*="insta"],
+.instagram-widget iframe {
+  background: transparent !important;
+}
+
+/* Optional subtle help for some third-party widgets */
+.instagram-widget .elfsight-widget-container {
+  padding: 0 !important;
+}
+
+/* ============================================
+   CUSTOM INSTAGRAM-STYLE PROFILE WIDGET
+   Matches the dark edgy aesthetic + blood red accents
+   ============================================ */
+.ig-profile-header {
+  border-bottom: 1px solid #27272a;
+  padding-bottom: 1.25rem;
+}
+
+#ig-posts-grid .ig-post {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  background: #161618;
+  border-radius: 6px;
+  cursor: zoom-in;
+}
+
+#ig-posts-grid .ig-post img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+#ig-posts-grid .ig-post:hover img {
+  transform: scale(1.08);
+}
+
+#ig-posts-grid .ig-post .ig-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.15) 45%, transparent 65%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  display: flex;
+  align-items: flex-end;
+  padding: 10px;
+  color: white;
+  font-size: 0.75rem;
+  line-height: 1.2;
+}
+
+#ig-posts-grid .ig-post:hover .ig-overlay {
+  opacity: 1;
+}
+
+#ig-posts-grid .ig-post .ig-overlay .caption {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+}
