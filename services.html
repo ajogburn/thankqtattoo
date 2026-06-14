@@ -159,62 +159,40 @@
     </div>
   </div>
 
-  <!-- BOOKING FORM -->
+  <!-- BOOKING / CONTACT INFO -->
   <section id="book" class="max-w-3xl mx-auto px-5 md:px-8 py-16">
     <div class="mb-8">
       <div class="uppercase tracking-[2.5px] text-xs text-red-500/70">NEXT STEP</div>
       <h2 class="text-4xl font-semibold tracking-[-1.2px]">Book a Consultation</h2>
-      <p class="text-zinc-400 mt-2">The best way to book with Qwami is to attend the shop’s monthly Consultation Day (first Wednesday of the month, 9am–8pm) or text <span data-content="phone">240-330-9873</span> directly. You can also submit the form below and I’ll follow up.</p>
+      <p class="text-zinc-400 mt-2">The best way to book with Qwami is to attend the shop’s monthly Consultation Day (first Wednesday of the month, 9am–8pm) or reach out directly.</p>
     </div>
 
-    <form class="thankq-form card p-7 md:p-8 space-y-5" action="#" method="POST">
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div class="card p-8 md:p-10 text-center md:text-left">
+      <div class="uppercase tracking-[1.5px] text-xs text-red-500/70 mb-4">GET IN TOUCH DIRECTLY</div>
+
+      <div class="space-y-5 text-base md:text-lg">
         <div>
-          <label class="block text-xs tracking-widest mb-1.5 text-zinc-400">YOUR NAME</label>
-          <input type="text" name="name" required class="form-input">
+          <div class="text-xs tracking-widest text-zinc-500 mb-1">DM ME ON INSTAGRAM</div>
+          <a href="https://instagram.com/thankqtattoos" target="_blank" class="text-red-400 hover:text-red-300 font-semibold">@thankqtattoos</a>
         </div>
+
         <div>
-          <label class="block text-xs tracking-widest mb-1.5 text-zinc-400">PHONE (PREFERRED)</label>
-          <input type="tel" name="phone" required class="form-input" placeholder="240-555-0199">
+          <div class="text-xs tracking-widest text-zinc-500 mb-1">TEXT MY PERSONAL NUMBER</div>
+          <a href="tel:2403309873" class="text-red-400 hover:text-red-300 font-semibold"><span data-content="phone">240-330-9873</span></a>
+        </div>
+
+        <div>
+          <div class="text-xs tracking-widest text-zinc-500 mb-1">CALL THE SHOP AND ASK FOR QWAMI</div>
+          <a href="tel:2542139896" class="text-red-400 hover:text-red-300 font-semibold"><span data-content="shopPhone">254-213-9896</span></a>
+          <div class="text-sm text-zinc-400 mt-0.5">Bangarang Tattooing Company</div>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-xs tracking-widest mb-1.5 text-zinc-400">EMAIL</label>
-          <input type="email" name="email" required class="form-input">
-        </div>
-        <div>
-          <label class="block text-xs tracking-widest mb-1.5 text-zinc-400">STYLE / TYPE</label>
-          <select name="style" class="form-select">
-            <option>American Traditional</option>
-            <option>Small Pieces / Jammers</option>
-            <option>Custom / Illustrative</option>
-            <option>Cover-up</option>
-            <option>Other / Not sure yet</option>
-          </select>
-        </div>
+      <div class="mt-8 pt-6 border-t border-zinc-800 text-sm text-zinc-400">
+        Consultation Day is still the best time for in-person discussions and booking. 
+        Shop hours: Fri–Mon 9am–8pm.
       </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-xs tracking-widest mb-1.5 text-zinc-400">APPROXIMATE SIZE</label>
-          <input type="text" name="size" class="form-input" placeholder="3x4 inch, palm size, half sleeve, etc.">
-        </div>
-        <div>
-          <label class="block text-xs tracking-widest mb-1.5 text-zinc-400">PREFERRED TIMING</label>
-          <input type="text" name="timing" class="form-input" placeholder="ASAP, next 6 weeks, flexible...">
-        </div>
-      </div>
-
-      <div>
-        <label class="block text-xs tracking-widest mb-1.5 text-zinc-400">TELL ME ABOUT THE PIECE</label>
-        <textarea name="message" required class="form-textarea" placeholder="Placement, references, meaning, existing tattoos in the area, etc. The more detail the better."></textarea>
-      </div>
-
-      <button type="submit" class="btn btn-primary w-full py-3.5 text-base">SUBMIT CONSULTATION REQUEST</button>
-      <p class="text-center text-xs text-zinc-500">You can also text <span data-content="phone" class="font-medium text-zinc-300">240-330-9873</span> directly for faster response.</p>
-    </form>
+    </div>
   </section>
 
   <footer class="border-t border-zinc-800 bg-[#0a0a0c] py-8">

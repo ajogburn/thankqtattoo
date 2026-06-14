@@ -377,33 +377,6 @@
     return () => cancelAnimationFrame(raf);
   }
 
-  // ============== FORMS ==============
-  function initForms() {
-    document.querySelectorAll('.thankq-form').forEach(form => {
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const fd = new FormData(form);
-        const data = Object.fromEntries(fd.entries());
-        data.ts = new Date().toISOString();
-        data.id = 'sub_' + Date.now();
-
-        const subs = loadFromStorage('thankq_submissions', []);
-        subs.unshift(data);
-        saveToStorage('thankq_submissions', subs.slice(0, 80));
-
-        const btn = form.querySelector('button[type="submit"]');
-        if (btn) {
-          const orig = btn.textContent;
-          btn.textContent = 'SENT — THANK YOU';
-          setTimeout(() => { btn.textContent = orig; }, 1400);
-        }
-
-        showToast('Thank you — your request has been received. Qwami will text you shortly.');
-        form.reset();
-      });
-    });
-  }
-
   // ============== NAV ==============
   function initNav() {
     const nav = document.querySelector('nav');
@@ -453,7 +426,6 @@
     const canvas = document.getElementById('ink-canvas');
     if (canvas) initInkParticles('ink-canvas');
 
-    initForms();
     await initFilters();
 
     document.querySelectorAll('#year').forEach(el => {
