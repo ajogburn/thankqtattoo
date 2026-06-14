@@ -128,7 +128,6 @@
     <div class="flex border-b border-zinc-800 mb-1 text-sm overflow-x-auto">
       <button onclick="switchTab('portfolio')" id="tab-portfolio" class="admin-tab active whitespace-nowrap">Portfolio</button>
       <button onclick="switchTab('tags')" id="tab-tags" class="admin-tab whitespace-nowrap">Filters &amp; Tags</button>
-      <button onclick="switchTab('content')" id="tab-content" class="admin-tab whitespace-nowrap">Site Content</button>
       <button onclick="switchTab('submissions')" id="tab-submissions" class="admin-tab whitespace-nowrap">Form Submissions</button>
     </div>
 
@@ -176,54 +175,6 @@
         <div class="text-[11px] mt-4 text-zinc-500 border border-zinc-800 bg-[#111113] rounded-xl p-3">
           Tip: Deleting a tag only removes it from the filter list. Any portfolio pieces that already use that style text in the <strong>style</strong> column will continue to display and filter correctly using the stored value.
         </div>
-      </div>
-    </div>
-
-    <!-- ========== CONTENT TAB ========== -->
-    <div id="panel-content" class="tab-panel hidden">
-      <div class="py-5">
-        <div class="font-semibold mb-1">Edit Public Site Content</div>
-        <div class="text-xs text-zinc-500 mb-6">These values are pulled from the <code>site_settings</code> table in Supabase. Changes appear on every page.</div>
-
-        <form id="content-form" onsubmit="saveSiteContent(event)" class="space-y-6 max-w-3xl">
-          <div>
-            <label class="text-xs uppercase tracking-widest text-zinc-400 block mb-1.5">Hero Tagline</label>
-            <input id="c-tagline" type="text" class="form-input">
-          </div>
-          <div>
-            <label class="text-xs uppercase tracking-widest text-zinc-400 block mb-1.5">Full Bio (About + teaser)</label>
-            <textarea id="c-bio" class="form-textarea" rows="8"></textarea>
-          </div>
-
-          <div class="grid md:grid-cols-2 gap-5">
-            <div>
-              <label class="text-xs uppercase tracking-widest text-zinc-400 block mb-1.5">Consultation Phone</label>
-              <input id="c-phone" type="text" class="form-input">
-            </div>
-            <div>
-              <label class="text-xs uppercase tracking-widest text-zinc-400 block mb-1.5">Shop Phone</label>
-              <input id="c-shopphone" type="text" class="form-input">
-            </div>
-            <div>
-              <label class="text-xs uppercase tracking-widest text-zinc-400 block mb-1.5">Shop Name</label>
-              <input id="c-shopname" type="text" class="form-input">
-            </div>
-            <div>
-              <label class="text-xs uppercase tracking-widest text-zinc-400 block mb-1.5">Address</label>
-              <input id="c-address" type="text" class="form-input">
-            </div>
-          </div>
-
-          <div>
-            <label class="text-xs uppercase tracking-widest text-zinc-400 block mb-1.5">Availability Note</label>
-            <input id="c-availability" type="text" class="form-input">
-          </div>
-
-          <div class="flex gap-3 pt-2">
-            <button type="submit" class="btn btn-primary">SAVE TO SUPABASE</button>
-            <button type="button" onclick="loadContentForm()" class="btn btn-ghost">RELOAD FROM CLOUD</button>
-          </div>
-        </form>
       </div>
     </div>
 
@@ -410,7 +361,6 @@
     async function initDashboard() {
       await Promise.all([
         refreshPortfolioList(),
-        loadContentForm(),
         renderSubmissionsList()
       ]);
       updateStats();
@@ -430,7 +380,6 @@
     async function refreshAll() {
       await Promise.all([
         refreshPortfolioList(),
-        loadContentForm(),
         refreshTagsList().catch(() => {})
       ]);
       updateStats();
@@ -786,42 +735,6 @@
         await refreshPortfolioList();
       } catch (err) {
         alert('Delete tag failed: ' + (err.message || err));
-      }
-    }
-
-    // ==================== SITE CONTENT ====================
-    async function loadContentForm() {
-      try {
-        const settings = await window.ThankQSupabase.getSiteSettings();
-        document.getElementById('c-tagline').value = settings.tagline || '';
-        document.getElementById('c-bio').value = settings.bio || '';
-        document.getElementById('c-phone').value = settings.phone || '';
-        document.getElementById('c-shopphone').value = settings.shopPhone || '';
-        document.getElementById('c-shopname').value = settings.shopName || '';
-        document.getElementById('c-address').value = settings.address || '';
-        document.getElementById('c-availability').value = settings.availability || '';
-      } catch (e) {
-        console.warn('Could not load site content', e);
-      }
-    }
-
-    async function saveSiteContent(e) {
-      e.preventDefault();
-      const payload = {
-        tagline: document.getElementById('c-tagline').value,
-        bio: document.getElementById('c-bio').value,
-        phone: document.getElementById('c-phone').value,
-        shopPhone: document.getElementById('c-shopphone').value,
-        shopName: document.getElementById('c-shopname').value,
-        address: document.getElementById('c-address').value,
-        availability: document.getElementById('c-availability').value
-      };
-
-      try {
-        await window.ThankQSupabase.saveSiteSettings(payload);
-        window.ThankQ.showToast('Site content saved to Supabase. Public pages updated.');
-      } catch (err) {
-        alert('Failed to save content: ' + (err.message || err));
       }
     }
 

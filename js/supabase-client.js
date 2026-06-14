@@ -347,7 +347,12 @@
     const client = getSupabase();
     if (!client) throw new Error('Supabase client not available');
 
-    const payload = {
+    // We build the payload with all possible fields.
+    // If your site_settings table is missing columns (common when it was
+    // created from an old version of the setup SQL), we gracefully drop
+    // the offending keys and retry once. This avoids the "column not found
+    // in the schema cache" error you just saw.
+    let payload = {
       id: 1,
       tagline: settings.tagline,
       bio: settings.bio,
@@ -359,11 +364,36 @@
       updated_at: new Date().toISOString()
     };
 
-    const { data, error } = await client
+    // Remove undefined values
+    Object.keys(payload).forEach(k => {
+      if (payload[k] === undefined) delete payload[k];
+    });
+
+    let { data, error } = await client
       .from('site_settings')
       .upsert(payload, { onConflict: 'id' })
       .select()
       .single();
+
+    // If we got a "column not found in schema cache" error, remove the
+    // bad column(s) from the payload and try one more time.
+    if (error && error.message && error.message.includes('schema cache')) {
+      const colMatch = error.message.match(/'([^']+)' column/);
+      if (colMatch && colMatch[1]) {
+        const badCol = colMatch[1];
+        console.warn(`[Supabase] site_settings is missing column "${badCol}". Retrying without it...`);
+        delete payload[badCol];
+
+        const retry = await client
+          .from('site_settings')
+          .upsert(payload, { onConflict: 'id' })
+          .select()
+          .single();
+
+        data = retry.data;
+        error = retry.error;
+      }
+    }
 
     if (error) throw error;
     return data;
